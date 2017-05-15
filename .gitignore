@@ -1,0 +1,22 @@
+# Text Editor files #
+###################
+*.pyc
+
+# Other files #
+###################
+*.json
+rooms.txt
+
+# Folders #
+###################
+virtualenv/
+include/
+lib/
+.cache/
+__pycache__/
+local/
+bin/
+
+
+
+
