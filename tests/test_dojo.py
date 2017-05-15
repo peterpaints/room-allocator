@@ -1,6 +1,5 @@
 import unittest
 from classes.dojo import Dojo
-from classes.office import Office
 
 
 class DojoClassTest(unittest.TestCase):
