@@ -1,5 +1,6 @@
 import unittest
 from classes.dojo import Dojo
+from classes.office import Office
 
 
 class DojoClassTest(unittest.TestCase):
@@ -54,4 +55,19 @@ class DojoClassTest(unittest.TestCase):
         self.assertEqual(result[0].wants_accommodation, 'N', msg="The default value of wants_accommodation is N if Y is not input")
 
     def test_allocation(self):
-        pass
+        # test it actually allocates, by creating new room and fellow, calling
+        # allocate on them, then checking if that room has the fellow in its
+        # persons list.
+        my_class_instance = Dojo()
+        new_office = my_class_instance.create_room("office", "Blue")
+        new_fellow = my_class_instance.add_person("Fellow", "Peter", "Musonye")
+        my_class_instance.allocate_rooms(new_fellow)
+        self.assertTrue(new_fellow in new_office.persons)
+
+    def test_allocated_persons_length_increases_once_person_is_allocated(self):
+        # Check if self.allocated_persons's length has increased.
+        my_class_instance = Dojo()
+        new_office = my_class_instance.create_room("office", "Blue")
+        new_fellow = my_class_instance.add_person("Fellow", "Peter", "Musonye")
+        my_class_instance.allocate_rooms(new_fellow)
+        self.assertEqual(len(my_class_instance.allocated_persons), 1)
