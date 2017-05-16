@@ -68,21 +68,21 @@ class MyInteractive(cmd.Cmd):
     def do_add_person(self, arg):
         """Usage: add_person <person_name> <person_surname> <person_type> [<wants_accommodation>]"""
         arguments = arg
-        print (arguments)
+        # print (arguments)
         if arguments['<person_name>']:
             if arguments['<person_type>'] and arguments['<person_type>'].lower() == 'staff':
                 dojo.add_person(arguments['<person_type>'], arguments['<person_name>'], arguments['<person_surname>'])
                 new_staff = dojo.all_persons[-1]
-                dojo.allocate_rooms(new_staff)
+                dojo.allocate_rooms()
             elif arguments['<person_type>'] and arguments['<person_type>'].lower() == 'fellow':
                 if arguments['<wants_accommodation>']:
                     dojo.add_person(arguments['<person_type>'], arguments['<person_name>'], arguments['<person_surname>'], arguments['<wants_accommodation>'])
                     new_fellow = dojo.all_persons[-1]
-                    dojo.allocate_rooms(new_fellow)
+                    dojo.allocate_rooms()
                 else:
                     dojo.add_person(arguments['<person_type>'], arguments['<person_name>'], arguments['<person_surname>'])
                     new_fellow = dojo.all_persons[-1]
-                    dojo.allocate_rooms(new_fellow)
+                    dojo.allocate_rooms()
 
 
 if __name__ == '__main__':
