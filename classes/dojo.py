@@ -21,11 +21,11 @@ class Dojo(object):
     def create_room(self, room_type, room_name):
         if not isinstance(room_name, str) or not isinstance(room_type, str):
             raise ValueError('Only strings are allowed as input')
-        elif room_type != "office" and room_type != "living_space":
-            raise ValueError("Invalid office type: Either 'office' or 'living_space'")
         else:
             room_type = room_type.lower()
             room_name = room_name.lower()
+        if room_type != "office" and room_type != "living_space":
+            raise ValueError("Invalid office type: Either 'office' or 'living_space'")
         for room in self.all_rooms:
             if room.room_name == room_name and room.room_type == room_type:
                 return "Room already exists"
@@ -46,8 +46,8 @@ class Dojo(object):
             person_type = person_type.lower()
             person_name = person_name.lower()
             person_surname = person_surname.lower()
-            # if person_type != 'staff' and person_type != 'fellow':
-            #     return "Invalid person_type"
+            if person_type != 'staff' and person_type != 'fellow':
+                return "Invalid person_type"
             if person_type == 'staff':
                 person = Staff(person_name, person_surname)
                 # self.all_persons.append(person)
@@ -60,46 +60,50 @@ class Dojo(object):
             self.all_persons.append(person)
             print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been successfully added!")
 
-    def allocate_rooms(self, person):
-        if person.person_type == "fellow":
-            if person.wants_accommodation == "Y":
-                if self.living_spaces:
-                    random_living_space_number = randint(0, len(self.living_spaces) - 1)
-                    living_space_allocation = self.living_spaces[random_living_space_number]
-                    living_space_allocation.add_occupant(person)
-                    print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been allocated " + living_space_allocation.room_type + " " + living_space_allocation.room_name.title())
-                else:
-                    print ("There are no living_spaces")
-                if self.offices:
-                    random_office_number = randint(0, len(self.offices) - 1)
-                    office_allocation = self.offices[random_office_number]
-                    office_allocation.add_occupant(person)
-                    self.allocated_persons.append(person)
-                    print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been allocated " + office_allocation.room_type + " " + office_allocation.room_name.title())
-                else:
-                    print ("There are no offices")
-            else:
-                if self.offices:
-                    random_office_number = randint(0, len(self.offices) - 1)
-                    office_allocation = self.offices[random_office_number]
-                    office_allocation.add_occupant(person)
-                    self.allocated_persons.append(person)
-                    print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been allocated " + office_allocation.room_type + " " + office_allocation.room_name.title())
-                else:
-                    print ("There are no offices")
-        elif person.person_type == "staff":
-            if self.offices:
-                random_office_number = randint(0, len(self.offices) - 1)
-                office_allocation = self.offices[random_office_number]
-                office_allocation.add_occupant(person)
-                self.allocated_persons.append(person)
-                print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been allocated " + office_allocation.room_type + " " + office_allocation.room_name.title())
-            else:
-                print ("There are no offices")
-
+    def allocate_rooms(self):
         for person in self.all_persons:
-            if person not in self.allocated_persons:
-                self.unallocated_persons.append(person)
+            if person.person_type == "fellow":
+                if person.wants_accommodation == "Y":
+                    if self.living_spaces:
+                        random_living_space_number = randint(0, len(self.living_spaces) - 1)
+                        living_space_allocation = self.living_spaces[random_living_space_number]
+                        living_space_allocation.add_occupant(person)
+                        print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been allocated " + living_space_allocation.room_type + " " + living_space_allocation.room_name.title())
+                    else:
+                        print ("There are no living_spaces")
+                    if self.offices:
+                        random_office_number = randint(0, len(self.offices) - 1)
+                        office_allocation = self.offices[random_office_number]
+                        office_allocation.add_occupant(person)
+                        print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been allocated " + office_allocation.room_type + " " + office_allocation.room_name.title())
+                    else:
+                        print ("There are no offices")
+
+                    for room in self.all_rooms:
+                        if person in room.persons:
+                            self.allocated_persons.append(person)
+                else:
+                    if self.offices:
+                        random_office_number = randint(0, len(self.offices) - 1)
+                        office_allocation = self.offices[random_office_number]
+                        office_allocation.add_occupant(person)
+                        self.allocated_persons.append(person)
+                        print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been allocated " + office_allocation.room_type + " " + office_allocation.room_name.title())
+                    else:
+                        print ("There are no offices")
+            elif person.person_type == "staff":
+                if self.offices:
+                    random_office_number = randint(0, len(self.offices) - 1)
+                    office_allocation = self.offices[random_office_number]
+                    office_allocation.add_occupant(person)
+                    self.allocated_persons.append(person)
+                    print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been allocated " + office_allocation.room_type + " " + office_allocation.room_name.title())
+                else:
+                    print ("There are no offices")
+
+            for person in self.all_persons:
+                if person not in self.allocated_persons:
+                    self.unallocated_persons.append(person)
 
 
 # my_class_instance = Dojo()
@@ -111,3 +115,6 @@ class Dojo(object):
 # print (another_office)
 # for room in my_class_instance.all_rooms:
 #     print (room.room_type, room.room_name)
+# x = Dojo()
+# new_fellow = x.add_person("fellow", "Peter", "Musonye", "Y")
+# print (x.allocate_rooms(new_fellow))
