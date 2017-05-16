@@ -7,7 +7,6 @@ class DojoClassTest(unittest.TestCase):
         my_class_instance = Dojo()
         initial_room_count = len(my_class_instance.all_rooms)
         blue_office = my_class_instance.create_room("office", "Blue")
-        self.assertTrue(blue_office)
         new_room_count = len(my_class_instance.all_rooms)
         self.assertEqual(new_room_count - initial_room_count, 1)
 
@@ -27,7 +26,6 @@ class DojoClassTest(unittest.TestCase):
         my_class_instance = Dojo()
         initial_person_count = len(my_class_instance.all_persons)
         staff_neil = my_class_instance.add_person("staff", "Neil", "Armstrong", "Y")
-        self.assertTrue(staff_neil)
         new_person_count = len(my_class_instance.all_persons)
         self.assertEqual(new_person_count - initial_person_count, 1)
 
@@ -58,15 +56,19 @@ class DojoClassTest(unittest.TestCase):
         # allocate on them, then checking if that room has the fellow in its
         # persons list.
         my_class_instance = Dojo()
-        new_office = my_class_instance.create_room("office", "Blue")
-        new_fellow = my_class_instance.add_person("Fellow", "Peter", "Musonye")
-        my_class_instance.allocate_rooms(new_fellow)
-        self.assertTrue(new_fellow in new_office.persons)
+        my_class_instance.create_room("office", "Blue")
+        new_office = my_class_instance.all_rooms[-1]
+        my_class_instance.add_person("Fellow", "Peter", "Musonye")
+        new_fellow = my_class_instance.all_persons[-1]
+        my_class_instance.allocate_rooms()
+        self.assertEqual(new_office.persons[-1], new_fellow)
 
     def test_allocated_persons_length_increases_once_person_is_allocated(self):
         # Check if self.allocated_persons's length has increased.
         my_class_instance = Dojo()
-        new_office = my_class_instance.create_room("office", "Blue")
-        new_fellow = my_class_instance.add_person("Fellow", "Peter", "Musonye")
-        my_class_instance.allocate_rooms(new_fellow)
+        my_class_instance.create_room("office", "Blue")
+        new_office = my_class_instance.all_rooms[-1]
+        my_class_instance.add_person("Fellow", "Peter", "Musonye")
+        new_fellow = my_class_instance.all_persons[-1]
+        my_class_instance.allocate_rooms()
         self.assertEqual(len(my_class_instance.allocated_persons), 1)
