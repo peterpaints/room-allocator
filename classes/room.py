@@ -5,9 +5,9 @@ class Room(object):
         self.max_persons = max_persons
         self.persons = []
 
-
     def add_occupant(self, person):
         if len(self.persons) < self.max_persons:
             self.persons.append(person)
+            print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been allocated " + self.room_type + " " + self.room_name.title())
         else:
-            return "Room is at full capacity"
+            raise Exception(self.room_type.title() + " " + self.room_name.title() + " is at full capacity")
