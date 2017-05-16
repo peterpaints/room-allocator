@@ -6,8 +6,5 @@ class Person(object):
         self.wants_accommodation = wants_accommodation
 
     def full_name(self):
-        if not isinstance(self.person_name, str) or not isinstance(self.person_surname, str):
-            raise ValueError('Only strings are allowed as names')
-        else:
-            self.full_name = self.person_name + " " + self.person_surname
-            return self.full_name
+        self.full_name = self.person_name + " " + self.person_surname
+        return self.full_name
