@@ -3,7 +3,8 @@ from classes.person import Person
 
 
 class PersonClassTest(unittest.TestCase):
-    def test_full_name_only_returns_strings(self):
-        with self.assertRaises(ValueError, msg='Only strings are allowed as names'):
-            my_class_instance = Person("staff", "Peter", 1234)
-            my_class_instance.full_name()
+    my_class_instance = Person("staff", "Peter", "Musonye", "Y")
+
+    def test_full_name_returns_actual_full_name(self):
+        full_name = self.my_class_instance.full_name()
+        self.assertEqual(full_name, 'Peter Musonye')
