@@ -19,7 +19,7 @@ class RoomClassTest(unittest.TestCase):
     def test_cannot_add_more_than_max_occupants(self):
         self.my_dojo_instance.add_person("fellow", "Peter", "Musonye", "Y")
         fellow_1 = self.my_dojo_instance.all_persons[-1]
-        self.my_dojo_instance.add_person("staff", "Farhan", "Abdi")
+        self.my_dojo_instance.add_person("fellow", "Farhan", "Abdi")
         fellow_2 = self.my_dojo_instance.all_persons[-1]
         self.my_dojo_instance.add_person("fellow", "Rose", "Maina", "Y")
         fellow_3 = self.my_dojo_instance.all_persons[-1]
