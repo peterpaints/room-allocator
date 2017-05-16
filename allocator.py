@@ -16,7 +16,6 @@ Examples:
 
 """
 
-import sys
 import cmd
 from docopt import docopt, DocoptExit
 from classes.dojo import Dojo
