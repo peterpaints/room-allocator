@@ -44,11 +44,10 @@ class Dojo(object):
             self.all_rooms.append(room)
             print ("An " + room.room_type + " called " + room.room_name.title() + " has been successfully created!")
 
-    def add_person(self, person_type, person_name, person_surname, wants_accommodation):
-        if wants_accommodation:
-            wants_accommodation = wants_accommodation.lower()
-            if wants_accommodation != "y" and wants_accommodation != "n":
-                raise ValueError("Please input Y or N for wants_accommodation")
+    def add_person(self, person_type, person_name, person_surname, wants_accommodation="N"):
+        wants_accommodation = wants_accommodation.lower()
+        if wants_accommodation != "y" and wants_accommodation != "n":
+            raise ValueError("Please input Y or N for wants_accommodation")
         if not isinstance(person_type, str) or not isinstance(person_name, str) or not isinstance(person_surname, str):
             raise ValueError('Only strings are allowed as input')
         else:
