@@ -85,8 +85,7 @@ class Dojo(object):
                                     living_space_allocation.add_occupant(person)
                                 except Exception as e:
                                     print (e)
-                                else:
-                                    self.allocated_persons.append(person)
+                                self.allocated_persons.append(person)
                             else:
                                 print ("There are no living_spaces to allocate " + person.person_name.title())
                             if self.offices:
@@ -96,9 +95,8 @@ class Dojo(object):
                                     office_allocation.add_occupant(person)
                                 except Exception as e:
                                     print (e)
-                                else:
-                                    if person not in self.allocated_persons:
-                                        self.allocated_persons.append(person)
+                                if person not in self.allocated_persons:
+                                    self.allocated_persons.append(person)
                             else:
                                 print ("There are no offices to allocate " + person.person_name.title())
                         else:
@@ -109,8 +107,7 @@ class Dojo(object):
                                     office_allocation.add_occupant(person)
                                 except Exception as e:
                                     print (e)
-                                else:
-                                    self.allocated_persons.append(person)
+                                self.allocated_persons.append(person)
                             else:
                                 print ("There are no offices to allocate " + person.person_name.title())
                     elif person.person_type == "staff":
@@ -121,8 +118,7 @@ class Dojo(object):
                                 office_allocation.add_occupant(person)
                             except Exception as e:
                                 print (e)
-                            else:
-                                self.allocated_persons.append(person)
+                            self.allocated_persons.append(person)
                         else:
                             print ("There are no offices to allocate " + person.person_name.title())
 
