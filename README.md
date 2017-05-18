@@ -20,7 +20,10 @@ Command | Arguments | Examples
 create_room | <room_type> <room_name>... | create_room office Kinshasa
 add_person | <person_name> <person_surname> <person_type> [<wants_accommodation>] | add_person Peter Musonye fellow Y
 print_room | <room_name> | print_room Kinshasa
-
+print_allocations | [--o=<filename>] | print_allocations / print_allocations --o=myfile
+print_unallocated | [--o=<filename>] | print unallocated / print_unallocated --o=myfile
+help | |
+exit | |
 
 ##### Installation:
 
