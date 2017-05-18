@@ -59,7 +59,7 @@ class DojoClassTest(unittest.TestCase):
 
     def test_that_rooms_must_exist_to_be_printed(self):
         """Test that error message is output of room does not exist."""
-        with self.assertRaises(ValueError, msg="Black does not exist"):
+        with self.assertRaises(Exception, msg="Black does not exist"):
             self.my_class_instance.print_room("black")
 
     def test_it_outputs_message_if_room_has_no_allocations(self):
@@ -67,18 +67,18 @@ class DojoClassTest(unittest.TestCase):
         self.my_class_instance.create_room("office", "Black")
         new_office = self.my_class_instance.all_rooms[-1]
         self.my_class_instance.allocate_rooms()
-        new_office_occupants = self.my_class_instance.print_room(new_office.room_name)
-        self.assertEqual(new_office_occupants, "Office Black has no occupants")
+        with self.assertRaises(Exception, msg="Office Black has no occupants"):
+            new_office_occupants = self.my_class_instance.print_room(new_office.room_name)
 
     def test_it_outputs_correct_occupants(self):
-        """Test that message is printed if a room has no occupants."""
+        """Test that actual occupants only are printed"""
         self.my_class_instance.add_person("fellow", "Peter", "Musonye")
         self.my_class_instance.add_person("staff", "Peter", "Muriuki")
         self.my_class_instance.create_room("office", "Black")
         new_office = self.my_class_instance.all_rooms[-1]
         self.my_class_instance.allocate_rooms()
-        new_office_occupants = self.my_class_instance.print_room(new_office.room_name)
-        self.assertListEqual(new_office_occupants, ["Peter Musonye Fellow", "Peter Muriuki Staff"])
+        new_office_occupants =self.my_class_instance.print_room(new_office.room_name)
+        self.assertEqual(new_office_occupants, ["Peter Musonye Fellow", "Peter Muriuki Staff"])
 
     def test_it_outputs_to_a_txt_file_if_optioned(self):
         pass
