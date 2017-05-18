@@ -1,4 +1,4 @@
-"""
+doc = """
 Office Space Allocator.
 
 Usage:
@@ -7,16 +7,19 @@ Usage:
   allocator print_room <room_name>
   allocator print_allocations [--o=<filename>]
   allocator print_unallocated [--o=<filename>]
+  allocator help
   allocator exit
 
 Options:
-  -h --help                         Show this screen.
-  --o=filename                      Optional filename to write output to.
-  --version                         Show version.
+    --o=filename                      Optional filename to write output to.
 
 Examples:
   allocator create_room office Blue
   allocator add_person Nelly Armweek Fellow Y
+  allocator print_room Blue
+  allocator print_allocations
+  allocator print_allocations --o=myfile
+  allocator print_unallocated --o=myfile
 
 """
 
@@ -58,10 +61,20 @@ def deco(f):
 
 
 class MyInteractive(cmd.Cmd):
-    intro = ('* ' * 10) + 'WELCOME TO THE OFFICE SPACE ALLOCATOR!' + (' *' * 10)\
-        + '\n' + ('= ' * 7) + 'the easiest way to handle all your room allocation.' + (' =' * 7) \
-        + '\n' + (' ' * 23) + 'Type help for a list of commands'
-    prompt = '(allocator) '
+    intro = '\n' + ' ' \
+        + '\n' + ' ' \
+        + (' ' * 10 + '* ' * 11) + 'WELCOME TO THE OFFICE SPACE ALLOCATOR!' + (' *' * 10)\
+        + '\n' + ' ' \
+        + '\n' + ' ' \
+        + '\n' + ' ' \
+        + '\n' + (' ' * 11 + '= ' * 7) + 'the easiest way to handle all your room allocation.' + (' =' * 7) \
+        + '\n' + ' ' \
+        + '\n' + ' ' \
+        + '\n' + ' ' \
+        + '\n' + (' ' * 12 + ' ' * 23) + 'Type help for a list of commands' \
+        + '\n' + ' ' \
+        + '\n' + '- ' * 53
+    prompt = '(allocator>>) '
 
     @deco
     def do_create_room(self, arg):
@@ -118,10 +131,16 @@ class MyInteractive(cmd.Cmd):
             print (e)
 
     @deco
+    def do_help(self, arg):
+        """Usage: help"""
+        print (doc)
+
+    @deco
     def do_exit(self, arg):
         """Usage: exit"""
         print ('Have a nice day!')
         exit()
+
 
 if __name__ == '__main__':
     try:
