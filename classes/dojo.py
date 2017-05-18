@@ -19,9 +19,7 @@ class Dojo(object):
         self.living_spaces = []
         self.those_allocated_offices = []
         self.those_allocated_living_spaces = []
-        self.unallocated_persons = [person for person in self.all_persons
-            if person not in self.those_allocated_offices or person not
-            in self.those_allocated_living_spaces]
+        self.unallocated_persons = []
 
     def create_room(self, room_type, room_name):
         room_type = room_type.lower()
@@ -145,6 +143,8 @@ class Dojo(object):
 
 
     def print_allocations(self, filename=None):
+        if filename:
+            print("Output written to " + filename + ".txt")
         for room in self.all_rooms:
             room_occupants = []
             try:
@@ -155,9 +155,38 @@ class Dojo(object):
             else:
                 for occupant in room.persons:
                     room_occupants.append(occupant.person_name.title() + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
-            print (" ")
-            print (room.room_type.title() + " " + room.room_name.title() + ":")
-            print ("-" * 23)
-            for occupant in room_occupants:
-                print (occupant)
+            if filename:
+                filename = filename.lower()
+                f = open(filename + ".txt", "a")
+                f.write(" " + "\n")
+                f.write(room.room_type.title() + " " + room.room_name.title() + ":" + "\n")
+                f.write("-" * 23 + "\n")
+                for occupant in room_occupants:
+                    f.write(occupant + "\n")
+            else:
+                print (" ")
+                print (room.room_type.title() + " " + room.room_name.title() + ":")
+                print ("-" * 23)
+                for occupant in room_occupants:
+                    print (occupant)
         return room_occupants
+
+    def print_unallocated(self, filename=None):
+        found = False
+        for person in self.all_persons:
+            if person not in self.those_allocated_offices and person not in self.those_allocated_living_spaces:
+                found = True
+                if filename:
+                    filename = filename.lower()
+                    f = open(filename + ".txt", "a")
+                    f.write(person.person_name.title() + " " + person.person_surname.title() + " " + person.person_type.title() + "\n")
+                else:
+                    print(person.person_name.title() + " " + person.person_surname.title() + " " + person.person_type.title())
+        if not found:
+            if not self.all_persons:
+                print("There's no one in the system")
+            else:
+                print("Everyone has been allocated a room")
+        else:
+            if filename:
+                print("Output written to " + filename + ".txt")
