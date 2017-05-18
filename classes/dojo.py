@@ -143,9 +143,6 @@ class Dojo(object):
     def print_allocations(self, filename=None):
         for room in self.all_rooms:
             room_occupants = []
-            print (" ")
-            print (room.room_type.title() + " " + room.room_name.title() + ":")
-            print ("-" * 23)
             try:
                 if not room.persons:
                     raise Exception(room.room_type.title() + " " + room.room_name.title() + " " + "has no occupants")
@@ -154,6 +151,9 @@ class Dojo(object):
             else:
                 for occupant in room.persons:
                     room_occupants.append(occupant.person_name.title() + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
+            print (" ")
+            print (room.room_type.title() + " " + room.room_name.title() + ":")
+            print ("-" * 23)
             for occupant in room_occupants:
                 print (occupant)
         return room_occupants
