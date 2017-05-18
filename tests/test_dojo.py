@@ -67,10 +67,15 @@ class DojoClassTest(unittest.TestCase):
         self.assertEqual(new_office.persons[-1], new_fellow)
         self.assertEqual(len(self.my_class_instance.allocated_persons), 1)
 
+    def test_room_name_to_be_printed_is_string(self):
+        """Test that user has passed in a string."""
+        with self.assertRaises(ValueError, msg="Please input room name as a string"):
+            self.my_class_instance.print_room(23)
+
     def test_that_rooms_must_exist_to_be_printed(self):
-        """Test that error message is output of room does not exist"""
-        with self.assertRaises(ValueError, msg="TM does not exist"):
-            self.my_class_instance.print_room("TM")
+        """Test that error message is output of room does not exist."""
+        with self.assertRaises(ValueError, msg="Black does not exist"):
+            self.my_class_instance.print_room("black")
 
     def test_it_outputs_message_if_room_has_no_allocations(self):
         """Test that message is printed if a room has no occupants."""
@@ -88,7 +93,7 @@ class DojoClassTest(unittest.TestCase):
         new_office = self.my_class_instance.all_rooms[-1]
         self.my_class_instance.allocate_rooms()
         new_office_occupants = self.my_class_instance.print_room(new_office.room_name)
-        self.assertEqual(new_office_occupants, "Peter Musonye Fellow\nPeter Muriuki Staff")
+        self.assertEqual(new_office_occupants, ("Peter Musonye Fellow\nPeter Muriuki Staff"))
 
     def test_it_outputs_to_a_txt_file_if_optioned(self):
         pass
