@@ -14,11 +14,14 @@ class Dojo(object):
 
     def __init__(self):
         self.all_rooms = []
-        self.allocated_persons = []
-        self.unallocated_persons = []
         self.all_persons = []
         self.offices = []
         self.living_spaces = []
+        self.those_allocated_offices = []
+        self.those_allocated_living_spaces = []
+        self.unallocated_persons = [person for person in self.all_persons
+            if person not in self.those_allocated_offices or person not
+            in self.those_allocated_living_spaces]
 
     def create_room(self, room_type, room_name):
         room_type = room_type.lower()
@@ -73,43 +76,19 @@ class Dojo(object):
             print ("There are no persons to allocate rooms")
         else:
             for person in self.all_persons:
-                if person not in self.allocated_persons:
-                    self.unallocated_persons.append(person)
-                    if person.person_type == "fellow":
-                        if person.wants_accommodation == "y":
-                            if self.living_spaces:
-                                random_living_space_number = randint(0, len(self.living_spaces) - 1)
-                                living_space_allocation = self.living_spaces[random_living_space_number]
-                                try:
-                                    living_space_allocation.add_occupant(person)
-                                except Exception as e:
-                                    print (e)
-                                self.allocated_persons.append(person)
-                            else:
-                                print ("There are no living_spaces to allocate " + person.person_name.title() + " " + person.person_surname.title())
-                            if self.offices:
-                                random_office_number = randint(0, len(self.offices) - 1)
-                                office_allocation = self.offices[random_office_number]
-                                try:
-                                    office_allocation.add_occupant(person)
-                                except Exception as e:
-                                    print (e)
-                                if person not in self.allocated_persons:
-                                    self.allocated_persons.append(person)
-                            else:
-                                print ("There are no offices to allocate " + person.person_name.title() + " " + person.person_surname.title())
+                if person.person_type == "fellow" and person.wants_accommodation == "y":
+                    if person not in self.those_allocated_living_spaces:
+                        if self.living_spaces:
+                            random_living_space_number = randint(0, len(self.living_spaces) - 1)
+                            living_space_allocation = self.living_spaces[random_living_space_number]
+                            try:
+                                living_space_allocation.add_occupant(person)
+                            except Exception as e:
+                                print (e)
+                            self.those_allocated_living_spaces.append(person)
                         else:
-                            if self.offices:
-                                random_office_number = randint(0, len(self.offices) - 1)
-                                office_allocation = self.offices[random_office_number]
-                                try:
-                                    office_allocation.add_occupant(person)
-                                except Exception as e:
-                                    print (e)
-                                self.allocated_persons.append(person)
-                            else:
-                                print ("There are no offices to allocate " + person.person_name.title() + " " + person.person_surname.title())
-                    elif person.person_type == "staff":
+                            print ("There are no living_spaces to allocate " + person.person_name.title() + " " + person.person_surname.title())
+                    if person not in self.those_allocated_offices:
                         if self.offices:
                             random_office_number = randint(0, len(self.offices) - 1)
                             office_allocation = self.offices[random_office_number]
@@ -117,7 +96,31 @@ class Dojo(object):
                                 office_allocation.add_occupant(person)
                             except Exception as e:
                                 print (e)
-                            self.allocated_persons.append(person)
+                            self.those_allocated_offices.append(person)
+                        else:
+                            print ("There are no offices to allocate " + person.person_name.title() + " " + person.person_surname.title())
+                elif person.person_type == "fellow" and person.wants_accommodation != "y":
+                    if person not in self.those_allocated_offices:
+                        if self.offices:
+                            random_office_number = randint(0, len(self.offices) - 1)
+                            office_allocation = self.offices[random_office_number]
+                            try:
+                                office_allocation.add_occupant(person)
+                            except Exception as e:
+                                print (e)
+                            self.those_allocated_offices.append(person)
+                        else:
+                            print ("There are no offices to allocate " + person.person_name.title() + " " + person.person_surname.title())
+                elif person.person_type == "staff":
+                    if person not in self.those_allocated_offices:
+                        if self.offices:
+                            random_office_number = randint(0, len(self.offices) - 1)
+                            office_allocation = self.offices[random_office_number]
+                            try:
+                                office_allocation.add_occupant(person)
+                            except Exception as e:
+                                print (e)
+                            self.those_allocated_offices.append(person)
                         else:
                             print ("There are no offices to allocate " + person.person_name.title() + " " + person.person_surname.title())
 
@@ -136,9 +139,10 @@ class Dojo(object):
                         room_occupants.append(occupant.person_name.title() + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
             for occupant in room_occupants:
                 print (occupant)
-            return room_occupants
         if not found:
             raise Exception(room_name.title() + " does not exist")
+        return room_occupants
+
 
     def print_allocations(self, filename=None):
         for room in self.all_rooms:
@@ -146,8 +150,8 @@ class Dojo(object):
             try:
                 if not room.persons:
                     raise Exception(room.room_type.title() + " " + room.room_name.title() + " " + "has no occupants")
-            except Exception as e:
-                print (e)
+            except Exception:
+                pass
             else:
                 for occupant in room.persons:
                     room_occupants.append(occupant.person_name.title() + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
