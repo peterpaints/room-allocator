@@ -55,7 +55,7 @@ class DojoClassTest(unittest.TestCase):
         new_fellow = self.my_class_instance.all_persons[-1]
         self.my_class_instance.allocate_rooms()
         self.assertEqual(new_office.persons[-1], new_fellow)
-        self.assertEqual(len(self.my_class_instance.allocated_persons), 1)
+        self.assertEqual(len(self.my_class_instance.those_allocated_offices), 1)
 
     def test_that_rooms_must_exist_to_be_printed(self):
         """Test that error message is output of room does not exist."""
