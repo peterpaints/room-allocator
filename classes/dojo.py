@@ -126,3 +126,24 @@ class Dojo(object):
                             self.allocated_persons.append(person)
                         else:
                             print ("There are no offices to allocate " + person.person_name.title() + " " + person.person_surname.title())
+
+    def print_room(self, room_name):
+        if not isinstance(room_name, str):
+            raise ValueError("Please input room_name as a string")
+        else:
+            room_name = room_name.lower()
+        found = False
+        for room in self.all_rooms:
+            room_occupants = []
+            if room.room_name == room_name:
+                found = True
+                print (room.room_type.title() + " " + room_name.title() + ":")
+                if not room.persons:
+                    raise Exception(room.room_type.title() + " " + room.room_name.title() + " " + "has no occupants")
+                else:
+                    for occupant in room.persons:
+                        room_occupants.append(occupant.person_name.title() + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
+            for occupant in room_occupants:
+                print (occupant)
+        if not found:
+            raise Exception(room_name.title() + " does not exist")
