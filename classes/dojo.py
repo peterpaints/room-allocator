@@ -21,11 +21,8 @@ class Dojo(object):
         self.living_spaces = []
 
     def create_room(self, room_type, room_name):
-        if not isinstance(room_name, str) or not isinstance(room_type, str):
-            raise ValueError('Invalid: Please input a string as room_name or room_type')
-        else:
-            room_type = room_type.lower()
-            room_name = room_name.lower()
+        room_type = room_type.lower()
+        room_name = room_name.lower()
         if room_type != "office" and room_type != "living_space":
             raise ValueError("Invalid room type: Your room type should be 'office' or 'living_space'")
         else:
@@ -52,27 +49,24 @@ class Dojo(object):
             wants_accommodation = wants_accommodation.lower()
             if wants_accommodation != "y" and wants_accommodation != "n":
                 raise ValueError("Please input Y or N for wants_accommodation")
-        if not isinstance(person_type, str) or not isinstance(person_name, str) or not isinstance(person_surname, str):
-            raise ValueError('Only strings are allowed as input')
+        person_type = person_type.lower()
+        person_name = person_name.lower()
+        person_surname = person_surname.lower()
+        if person_type != 'staff' and person_type != 'fellow':
+            raise ValueError("Invalid person_type: Your person type should be either 'fellow' or 'staff'")
+        if person_type == 'staff':
+            person = Staff(person_name, person_surname)
+        elif person_type == 'fellow':
+            person = Fellow(person_name, person_surname, wants_accommodation)
+        try:
+            for item in self.all_persons:
+                if item.person_name == person_name and item.person_surname == person_surname:
+                    raise Exception(person_type.title() + " " + person_name.title() + " already exists")
+        except Exception as e:
+            print (e)
         else:
-            person_type = person_type.lower()
-            person_name = person_name.lower()
-            person_surname = person_surname.lower()
-            if person_type != 'staff' and person_type != 'fellow':
-                raise ValueError("Invalid person_type: Your person type should be either 'fellow' or 'staff'")
-            if person_type == 'staff':
-                person = Staff(person_name, person_surname)
-            elif person_type == 'fellow':
-                person = Fellow(person_name, person_surname, wants_accommodation)
-            try:
-                for item in self.all_persons:
-                    if item.person_name == person_name and item.person_surname == person_surname:
-                        raise Exception(person_type.title() + " " + person_name.title() + " already exists")
-            except Exception as e:
-                print (e)
-            else:
-                self.all_persons.append(person)
-                print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been successfully added!")
+            self.all_persons.append(person)
+            print (person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " has been successfully added!")
 
     def allocate_rooms(self):
         if not self.all_persons:
@@ -128,10 +122,7 @@ class Dojo(object):
                             print ("There are no offices to allocate " + person.person_name.title() + " " + person.person_surname.title())
 
     def print_room(self, room_name):
-        if not isinstance(room_name, str):
-            raise ValueError("Please input room_name as a string")
-        else:
-            room_name = room_name.lower()
+        room_name = room_name.lower()
         found = False
         for room in self.all_rooms:
             room_occupants = []
@@ -145,5 +136,6 @@ class Dojo(object):
                         room_occupants.append(occupant.person_name.title() + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
             for occupant in room_occupants:
                 print (occupant)
+            return room_occupants
         if not found:
             raise Exception(room_name.title() + " does not exist")
