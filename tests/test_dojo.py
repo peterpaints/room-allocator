@@ -67,12 +67,17 @@ class DojoClassTest(unittest.TestCase):
         self.assertEqual(new_office.persons[-1], new_fellow)
         self.assertEqual(len(self.my_class_instance.allocated_persons), 1)
 
+    def test_that_rooms_must_exist_to_be_printed(self):
+        """Test that error message is output of room does not exist"""
+        with self.assertRaises(ValueError, msg="TM does not exist"):
+            self.my_class_instance.print_room("TM")
+
     def test_it_outputs_message_if_room_has_no_allocations(self):
         """Test that message is printed if a room has no occupants."""
-        self.example.create_room("office", "Black")
-        new_office = self.example.all_rooms[-1]
-        self.example.allocate_rooms()
-        new_office_occupants = self.example.print_room(new_office.room_name)
+        self.my_class_instance.create_room("office", "Black")
+        new_office = self.my_class_instance.all_rooms[-1]
+        self.my_class_instance.allocate_rooms()
+        new_office_occupants = self.my_class_instance.print_room(new_office.room_name)
         self.assertEqual(new_office_occupants, "Office Black has no occupants")
 
     def test_it_outputs_correct_occupants(self):
