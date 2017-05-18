@@ -38,4 +38,4 @@ Here is a demo of the app in action:
 
 ##### License:
 
-###### [The MIT License](https://opensource.org/licenses/MIT).
+###### [The MIT License](https://github.com/peterpaints/room-allocator/blob/master/license.md).
