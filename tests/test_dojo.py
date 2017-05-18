@@ -78,7 +78,10 @@ class DojoClassTest(unittest.TestCase):
         new_office = self.my_class_instance.all_rooms[-1]
         self.my_class_instance.allocate_rooms()
         new_office_occupants =self.my_class_instance.print_room(new_office.room_name)
+        allocations =self.my_class_instance.print_allocations()
         self.assertEqual(new_office_occupants, ["Peter Musonye Fellow", "Peter Muriuki Staff"])
+        self.assertEqual(allocations, ["Peter Musonye Fellow", "Peter Muriuki Staff"])
+
 
     def test_it_outputs_to_a_txt_file_if_optioned(self):
         pass
