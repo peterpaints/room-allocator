@@ -4,6 +4,7 @@ Office Space Allocator.
 Usage:
   allocator create_room <room_type> <room_name>...
   allocator add_person <person_name> <person_surname> <person_type> [<wants_accommodation>]
+  allocator print_room <room_name>
   allocator exit
 
 Options:
@@ -62,11 +63,10 @@ class MyInteractive(cmd.Cmd):
     @deco
     def do_create_room(self, arg):
         """Usage: create_room <room_type> <room_name>..."""
-        arguments = arg
         try:
-            if arguments['<room_name>'] and arguments['<room_type>']:
-                for room_name in arguments['<room_name>']:
-                    dojo.create_room(arguments['<room_type>'], room_name)
+            if arg['<room_name>'] and arg['<room_type>']:
+                for room_name in arg['<room_name>']:
+                    dojo.create_room(arg['<room_type>'], room_name)
                     dojo.allocate_rooms()
         except Exception as e:
             print (e)
@@ -74,13 +74,21 @@ class MyInteractive(cmd.Cmd):
     @deco
     def do_add_person(self, arg):
         """Usage: add_person <person_name> <person_surname> <person_type> [<wants_accommodation>]"""
-        arguments = arg
         try:
-            if arguments['<person_name>']:
-                if arguments['<person_type>']:
-                    dojo.add_person(arguments['<person_type>'], arguments['<person_name>'], arguments['<person_surname>'], arguments['<wants_accommodation>'])
+            if arg['<person_name>']:
+                if arg['<person_type>']:
+                    dojo.add_person(arg['<person_type>'], arg['<person_name>'], arg['<person_surname>'], arg['<wants_accommodation>'])
                     new_fellow = dojo.all_persons[-1]
                     dojo.allocate_rooms()
+        except Exception as e:
+            print (e)
+
+    @deco
+    def do_print_room(self, arg):
+        """Usage: print_room <room_name>"""
+        try:
+            if arg['<room_name>']:
+                dojo.print_room(arg['<room_name>'])
         except Exception as e:
             print (e)
 
