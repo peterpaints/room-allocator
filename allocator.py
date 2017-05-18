@@ -5,10 +5,12 @@ Usage:
   allocator create_room <room_type> <room_name>...
   allocator add_person <person_name> <person_surname> <person_type> [<wants_accommodation>]
   allocator print_room <room_name>
+  allocator print_allocations [-o=filename]
   allocator exit
 
 Options:
   -h --help                         Show this screen.
+  -o=filename                       Optional filename.
   --version                         Show version.
 
 Examples:
@@ -89,6 +91,15 @@ class MyInteractive(cmd.Cmd):
         try:
             if arg['<room_name>']:
                 dojo.print_room(arg['<room_name>'])
+        except Exception as e:
+            print (e)
+
+    @deco
+    def do_print_allocations(self, arg):
+        """Usage: print_allocations [-o=filename]"""
+        try:
+            # if arg['-o=filename']:
+            dojo.print_allocations()
         except Exception as e:
             print (e)
 
