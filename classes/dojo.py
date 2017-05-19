@@ -171,35 +171,38 @@ class Dojo(object):
     def print_allocations(self, filename=None):
         if filename:
             print("Output written to " + filename + ".txt")
-        for room in self.all_rooms:
-            room_occupants = []
-            try:
-                if not room.persons:
-                    raise Exception(room.room_type.title(
-                    ) + " " + room.room_name.title() + " " + "has no occupants")
-            except Exception:
-                pass
-            else:
-                for occupant in room.persons:
-                    room_occupants.append(occupant.person_name.title(
-                    ) + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
-            if filename:
-                filename = filename.lower()
-                f = open(filename + ".txt", "a")
-                f.write(" " + "\n")
-                f.write(room.room_type.title() + " " +
-                        room.room_name.title() + ":" + "\n")
-                f.write("-" * 23 + "\n")
-                for occupant in room_occupants:
-                    f.write(occupant + "\n")
-            else:
-                print (" ")
-                print (room.room_type.title() + " " +
-                       room.room_name.title() + ":")
-                print ("-" * 23)
-                for occupant in room_occupants:
-                    print (occupant)
-        return room_occupants
+        if not self.all_rooms:
+            print("There are no allocations yet")
+        else:
+            for room in self.all_rooms:
+                room_occupants = []
+                try:
+                    if not room.persons:
+                        raise Exception(room.room_type.title(
+                        ) + " " + room.room_name.title() + " " + "has no occupants")
+                except Exception:
+                    pass
+                else:
+                    for occupant in room.persons:
+                        room_occupants.append(occupant.person_name.title(
+                        ) + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
+                if filename:
+                    filename = filename.lower()
+                    f = open(filename + ".txt", "a")
+                    f.write(" " + "\n")
+                    f.write(room.room_type.title() + " " +
+                            room.room_name.title() + ":" + "\n")
+                    f.write("-" * 23 + "\n")
+                    for occupant in room_occupants:
+                        f.write(occupant + "\n")
+                else:
+                    print (" ")
+                    print (room.room_type.title() + " " +
+                           room.room_name.title() + ":")
+                    print ("-" * 23)
+                    for occupant in room_occupants:
+                        print (occupant)
+            return room_occupants
 
     def print_unallocated(self, filename=None):
         found = False
