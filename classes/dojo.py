@@ -93,8 +93,8 @@ class Dojo(object):
                                     person)
                             except Exception as e:
                                 print (e)
-                            self.those_allocated_living_spaces.append(
-                                person)
+                            else:
+                                self.those_allocated_living_spaces.append(person)
                         else:
                             print ("There are no living_spaces to allocate " +
                                    person.person_name.title() + " " + person.person_surname.title())
@@ -108,8 +108,8 @@ class Dojo(object):
                                     person)
                             except Exception as e:
                                 print (e)
-                            self.those_allocated_offices.append(
-                                person)
+                            else:
+                                self.those_allocated_offices.append(person)
                         else:
                             print ("There are no offices to allocate " + person.person_name.title(
                             ) + " " + person.person_surname.title())
@@ -124,8 +124,8 @@ class Dojo(object):
                                     person)
                             except Exception as e:
                                 print (e)
-                            self.those_allocated_offices.append(
-                                person)
+                            else:
+                                self.those_allocated_offices.append(person)
                         else:
                             print ("There are no offices to allocate " + person.person_name.title(
                             ) + " " + person.person_surname.title())
@@ -140,8 +140,8 @@ class Dojo(object):
                                     person)
                             except Exception as e:
                                 print (e)
-                            self.those_allocated_offices.append(
-                                person)
+                            else:
+                                self.those_allocated_offices.append(person)
                         else:
                             print ("There are no offices to allocate " + person.person_name.title(
                             ) + " " + person.person_surname.title())
@@ -169,11 +169,11 @@ class Dojo(object):
         return room_occupants
 
     def print_allocations(self, filename=None):
-        if filename:
-            print("Output written to " + filename + ".txt")
         if not self.all_rooms:
             print("There are no allocations yet")
         else:
+            if filename:
+                print("Output written to " + filename + ".txt")
             for room in self.all_rooms:
                 room_occupants = []
                 try:
