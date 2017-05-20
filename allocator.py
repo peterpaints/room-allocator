@@ -87,6 +87,8 @@ class MyInteractive(cmd.Cmd):
     @deco
     def do_add_person(self, arg):
         """Usage: add_person <person_name> <person_surname> <person_type> [<wants_accommodation>]"""
+        if arg['<wants_accommodation>'] is None:
+            arg['<wants_accommodation>'] = "N"
         if arg['<person_name>'] and arg['<person_type>']:
             dojo.add_person(arg['<person_type>'], arg['<person_name>'], arg['<person_surname>'], arg['<wants_accommodation>'])
             dojo.allocate_rooms()
