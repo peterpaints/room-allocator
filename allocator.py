@@ -79,56 +79,39 @@ class MyInteractive(cmd.Cmd):
     @deco
     def do_create_room(self, arg):
         """Usage: create_room <room_type> <room_name>..."""
-        try:
-            if arg['<room_name>'] and arg['<room_type>']:
-                for room_name in arg['<room_name>']:
-                    dojo.create_room(arg['<room_type>'], room_name)
-                    dojo.allocate_rooms()
-        except Exception as e:
-            print (e)
+        if arg['<room_name>'] and arg['<room_type>']:
+            for room_name in arg['<room_name>']:
+                dojo.create_room(arg['<room_type>'], room_name)
+                dojo.allocate_rooms()
 
     @deco
     def do_add_person(self, arg):
         """Usage: add_person <person_name> <person_surname> <person_type> [<wants_accommodation>]"""
-        try:
-            if arg['<person_name>']:
-                if arg['<person_type>']:
-                    dojo.add_person(arg['<person_type>'], arg['<person_name>'], arg['<person_surname>'], arg['<wants_accommodation>'])
-                    new_fellow = dojo.all_persons[-1]
-                    dojo.allocate_rooms()
-        except Exception as e:
-            print (e)
+        if arg['<person_name>'] and arg['<person_type>']:
+            dojo.add_person(arg['<person_type>'], arg['<person_name>'], arg['<person_surname>'], arg['<wants_accommodation>'])
+            dojo.allocate_rooms()
 
     @deco
     def do_print_room(self, arg):
         """Usage: print_room <room_name>"""
-        try:
-            if arg['<room_name>']:
-                dojo.print_room(arg['<room_name>'])
-        except Exception as e:
-            print (e)
+        if arg['<room_name>']:
+            dojo.print_room(arg['<room_name>'])
 
     @deco
     def do_print_allocations(self, arg):
         """Usage: print_allocations [--o=<filename>]"""
-        try:
-            if arg['--o']:
-                dojo.print_allocations(arg['--o'])
-            else:
-                dojo.print_allocations()
-        except Exception as e:
-            print (e)
+        if arg['--o']:
+            dojo.print_allocations(arg['--o'])
+        else:
+            dojo.print_allocations()
 
     @deco
     def do_print_unallocated(self, arg):
         """Usage: print_unallocated [--o=<filename>]"""
-        try:
-            if arg['--o']:
-                dojo.print_unallocated(arg['--o'])
-            else:
-                dojo.print_unallocated()
-        except Exception as e:
-            print (e)
+        if arg['--o']:
+            dojo.print_unallocated(arg['--o'])
+        else:
+            dojo.print_unallocated()
 
     @deco
     def do_help(self, arg):
