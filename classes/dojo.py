@@ -50,15 +50,15 @@ class Dojo(object):
 
     def add_person(self, person_type, person_name, person_surname, wants_accommodation="N"):
         wants_accommodation = wants_accommodation.lower()
+        person_type = person_type.lower()
+        person_name = person_name.lower()
+        person_surname = person_surname.lower()
         if wants_accommodation != "y" and wants_accommodation != "n":
             print("Please input Y or N for wants_accommodation")
         elif person_type != 'staff' and person_type != 'fellow':
             print(
                 "Invalid person_type: Your person type should be either 'fellow' or 'staff'")
         else:
-            person_type = person_type.lower()
-            person_name = person_name.lower()
-            person_surname = person_surname.lower()
             if person_type == 'staff':
                 person = Staff(person_name, person_surname)
             elif person_type == 'fellow':
