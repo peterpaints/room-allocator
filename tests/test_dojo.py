@@ -1,10 +1,13 @@
+import sys
 import unittest
+from io import StringIO
 from classes.dojo import Dojo
 
 
 class DojoClassTest(unittest.TestCase):
     def setUp(self):
         self.my_class_instance = Dojo()
+        self.held, sys.stdout = sys.stdout, StringIO()
 
     def test_create_room_successfully(self):
         """Test that the list of all rooms increases by 1."""
@@ -34,13 +37,17 @@ class DojoClassTest(unittest.TestCase):
 
     def test_person_type_either_fellow_or_staff(self):
         """Test that person_type is either 'fellow' or 'staff'."""
-        with self.assertRaises(ValueError, msg="Invalid person_type: Your person type should be either 'fellow' or 'staff'"):
-            self.my_class_instance.add_person("Fella", "Peter", "Musonye")
+        self.my_class_instance.add_person("Fella", "Peter", "Musonye")
+        message = sys.stdout.getvalue().strip()
+        self.assertIn(message, "Invalid person_type: Your person type should be either 'fellow' or 'staff'")
+
 
     def test_wants_accommodation_is_Y_or_N(self):
         """Test that wants_accommodation is only 'Y' or 'N'."""
-        with self.assertRaises(ValueError, msg="Please input Y or N for wants_accommodation"):
-            self.my_class_instance.add_person("Fellow", "Peter", "Musonye", "Yes")
+        self.my_class_instance.add_person("Fellow", "Peter", "Musonye", "Yes")
+        message = sys.stdout.getvalue().strip()
+        self.assertIn(message, "Please input Y or N for wants_accommodation")
+
 
     def test_allocation(self):
         """
@@ -59,16 +66,20 @@ class DojoClassTest(unittest.TestCase):
 
     def test_that_rooms_must_exist_to_be_printed(self):
         """Test that error message is output of room does not exist."""
-        with self.assertRaises(Exception, msg="Black does not exist"):
-            self.my_class_instance.print_room("black")
+        self.my_class_instance.print_room("black")
+        message = sys.stdout.getvalue().strip()
+        self.assertIn(message, "Black does not exist")
+
 
     def test_it_outputs_message_if_room_has_no_allocations(self):
         """Test that message is printed if a room has no occupants."""
         self.my_class_instance.create_room("office", "Black")
         new_office = self.my_class_instance.all_rooms[-1]
         self.my_class_instance.allocate_rooms()
-        with self.assertRaises(Exception, msg="Office Black has no occupants"):
-            new_office_occupants = self.my_class_instance.print_room(new_office.room_name)
+        self.my_class_instance.print_room(new_office.room_name)
+        message = sys.stdout.getvalue().strip()
+        self.assertIn("Office Black has no occupants", message)
+
 
     def test_it_outputs_correct_occupants(self):
         """Test that actual occupants only are printed"""
@@ -78,7 +89,7 @@ class DojoClassTest(unittest.TestCase):
         new_office = self.my_class_instance.all_rooms[-1]
         self.my_class_instance.allocate_rooms()
         new_office_occupants =self.my_class_instance.print_room(new_office.room_name)
-        allocations =self.my_class_instance.print_allocations()
+        allocations = self.my_class_instance.print_allocations()
         self.assertEqual(new_office_occupants, ["Peter Musonye Fellow", "Peter Muriuki Staff"])
         self.assertEqual(allocations, ["Peter Musonye Fellow", "Peter Muriuki Staff"])
 
