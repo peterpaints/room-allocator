@@ -65,7 +65,7 @@ class DojoClassTest(unittest.TestCase):
         self.assertEqual(len(self.my_class_instance.those_allocated_offices), 1)
 
     def test_that_rooms_must_exist_to_be_printed(self):
-        """Test that error message is output of room does not exist."""
+        """Test that error message is output if room does not exist."""
         self.my_class_instance.print_room("black")
         message = sys.stdout.getvalue().strip()
         self.assertIn(message, "Black does not exist")
