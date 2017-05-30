@@ -20,6 +20,7 @@ class Dojo(object):
         self.those_allocated_offices = []
         self.those_allocated_living_spaces = []
         self.unallocated_persons = []
+        self.iden = 0
 
     def create_room(self, room_type, room_name):
         room_type = room_type.lower()
@@ -60,10 +61,12 @@ class Dojo(object):
                 "Invalid person_type: Your person type should be either 'fellow' or 'staff'")
         else:
             if person_type == 'staff':
-                person = Staff(person_name, person_surname)
+                self.iden += 1
+                person = Staff(self.iden, person_name, person_surname)
             elif person_type == 'fellow':
+                self.iden += 1
                 person = Fellow(
-                    person_name, person_surname, wants_accommodation)
+                    self.iden, person_name, person_surname, wants_accommodation)
             try:
                 for item in self.all_persons:
                     if item.person_name == person_name and item.person_surname == person_surname:
@@ -73,8 +76,9 @@ class Dojo(object):
                 print (e)
             else:
                 self.all_persons.append(person)
-                print (person.person_type.title() + " " + person.person_name.title() +
-                       " " + person.person_surname.title() + " has been successfully added!")
+                # print (person.person_type.title() + " " + person.person_name.title() +
+                #        " " + person.person_surname.title() + " " + str(person.iden) + " has been successfully added!")
+                print (person.iden)
 
     def allocate_rooms(self):
         if not self.all_persons:
@@ -225,3 +229,6 @@ class Dojo(object):
         else:
             if filename:
                 print("Output written to " + filename + ".txt")
+
+    def reallocate(self, id, room_type, room_name):
+        pass
