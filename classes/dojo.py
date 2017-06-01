@@ -165,8 +165,8 @@ class Dojo(object):
                     for occupant in room.persons:
                         room_occupants.append(occupant.person_name.title(
                         ) + " " + occupant.person_surname.title() + " " + occupant.person_type.title() + " ID: " + str(occupant.iden))
-            for occupant in room_occupants:
-                print (occupant)
+                for occupant in room_occupants:
+                    print (occupant)
         if not found:
             print(room_name.title() + " does not exist")
         else:
@@ -230,5 +230,26 @@ class Dojo(object):
             if filename:
                 print("Output written to " + filename + ".txt")
 
-    def reallocate(self, id, room_type, room_name):
-        pass
+    def reallocate_person(self, iden, room_type, room_name):
+        iden = int(iden)
+        room_type = room_type.lower()
+        room_name = room_name.lower()
+        if room_type == "office":
+            for person in self.those_allocated_offices:
+                if person.iden == iden:
+                    for office in self.offices:
+                        for occupant in office.persons:
+                            if occupant == person:
+                                office.persons.remove(occupant)
+                        if office.room_name == room_name:
+                            office.add_occupant(person)
+
+        elif room_type == "living_space":
+            for person in self.those_allocated_living_spaces:
+                if person.iden == iden:
+                    for living_space in self.living_spaces:
+                        for occupant in living_space.persons:
+                            if occupant == person:
+                                living_space.persons.remove(occupant)
+                        if living_space.room_name == room_name:
+                            living_space.add_occupant(person)
