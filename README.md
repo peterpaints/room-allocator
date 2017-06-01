@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/peterpaints/room-allocator.svg?branch=task_0)](https://travis-ci.org/peterpaints/room-allocator)
+[![Build Status](https://travis-ci.org/peterpaints/room-allocator.svg?branch=task_2)](https://travis-ci.org/peterpaints/room-allocator)
 # Andela BootCamp 18 Week 2 Project
 ### Office Space Allocator
 
@@ -37,7 +37,7 @@ exit | |
 
 ##### Demo:
 Here is a demo of the app in action:
-
+[![asciicast](https://asciinema.org/a/dj19wnrnf13aadxvgzlscsnk2.png)](https://asciinema.org/a/dj19wnrnf13aadxvgzlscsnk2)
 
 ##### License:
 
