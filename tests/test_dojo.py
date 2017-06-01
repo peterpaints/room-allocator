@@ -107,3 +107,15 @@ class DojoClassTest(unittest.TestCase):
         blue_office_occupants = self.my_class_instance.print_room(blue_office.room_name)
         self.assertEqual(black_office_occupants, [])
         self.assertEqual(blue_office_occupants, ["Peter Musonye Fellow ID: 1"])
+
+    def test_cannot_reallocate_to_non_existent_room(self):
+        pass
+
+    def test_raises_error_if_reallocating_to_full_room(self):
+        pass
+
+    def test_cannot_reallocate_non_existent_person(self):
+        pass
+
+    def test_raises_error_for_wrong_room_type_or_name(self):
+        pass
