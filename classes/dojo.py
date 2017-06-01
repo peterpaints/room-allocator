@@ -76,9 +76,9 @@ class Dojo(object):
                 print (e)
             else:
                 self.all_persons.append(person)
-                # print (person.person_type.title() + " " + person.person_name.title() +
-                #        " " + person.person_surname.title() + " " + str(person.iden) + " has been successfully added!")
-                print (person.iden)
+                print (person.person_type.title() + " " + person.person_name.title() +
+                       " " + person.person_surname.title() + " " + "ID: " + str(person.iden) + " has been successfully added!")
+                # print (person.iden)
 
     def allocate_rooms(self):
         if not self.all_persons:
@@ -164,7 +164,7 @@ class Dojo(object):
                 else:
                     for occupant in room.persons:
                         room_occupants.append(occupant.person_name.title(
-                        ) + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
+                        ) + " " + occupant.person_surname.title() + " " + occupant.person_type.title() + " ID: " + str(occupant.iden))
             for occupant in room_occupants:
                 print (occupant)
         if not found:
@@ -189,7 +189,7 @@ class Dojo(object):
                 else:
                     for occupant in room.persons:
                         room_occupants.append(occupant.person_name.title(
-                        ) + " " + occupant.person_surname.title() + " " + occupant.person_type.title())
+                        ) + " " + occupant.person_surname.title() + " " + occupant.person_type.title() + " ID: " + str(occupant.iden))
                 if filename:
                     filename = filename.lower()
                     f = open(filename + ".txt", "a")
@@ -217,10 +217,10 @@ class Dojo(object):
                     filename = filename.lower()
                     f = open(filename + ".txt", "a")
                     f.write(person.person_name.title(
-                    ) + " " + person.person_surname.title() + " " + person.person_type.title() + "\n")
+                    ) + " " + person.person_surname.title() + " " + person.person_type.title() + " ID: " + str(person.iden) + "\n")
                 else:
                     print(person.person_name.title(
-                    ) + " " + person.person_surname.title() + " " + person.person_type.title())
+                    ) + " " + person.person_surname.title() + " " + person.person_type.title() + " ID: " + str(person.iden))
         if not found:
             if not self.all_persons:
                 print("There's no one in the system")
