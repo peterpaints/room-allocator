@@ -7,6 +7,7 @@ Usage:
   allocator print_room <room_name>
   allocator print_allocations [--o=<filename>]
   allocator print_unallocated [--o=<filename>]
+  allocator reallocate_person <person_identifier> <new_room_type> <new_room_name>
   allocator help
   allocator exit
 
@@ -20,6 +21,7 @@ Examples:
   allocator print_allocations
   allocator print_allocations --o=myfile
   allocator print_unallocated --o=myfile
+  allocator reallocate_person 1 office Red
 
 """
 
@@ -89,7 +91,7 @@ class MyInteractive(cmd.Cmd):
         """Usage: add_person <person_name> <person_surname> <person_type> [<wants_accommodation>]"""
         if arg['<wants_accommodation>'] is None:
             arg['<wants_accommodation>'] = "N"
-        if arg['<person_name>'] and arg['<person_type>']:
+        if arg['<person_name>'] and arg['<person_surname>'] and arg['<person_type>']:
             dojo.add_person(arg['<person_type>'], arg['<person_name>'], arg['<person_surname>'], arg['<wants_accommodation>'])
             dojo.allocate_rooms()
 
@@ -114,6 +116,12 @@ class MyInteractive(cmd.Cmd):
             dojo.print_unallocated(arg['--o'])
         else:
             dojo.print_unallocated()
+
+    @deco
+    def do_reallocate_person(self, arg):
+        """Usage: reallocate_person <person_identifier> <new_room_type> <new_room_name>"""
+        if arg['<person_identifier>'] and arg['<new_room_type>'] and arg['<new_room_name>']:
+            dojo.reallocate_person(arg['<person_identifier>'], arg['<new_room_type>'], arg['<new_room_name>'])
 
     @deco
     def do_help(self, arg):
