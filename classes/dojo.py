@@ -82,7 +82,7 @@ class Dojo(object):
         if not self.all_persons:
             print ("There are no persons to allocate rooms")
         else:
-            tries = 2 * len(self.all_rooms) + len(self.all_persons)
+            tries = 2 + len(self.all_rooms) * 9
             while tries > 0:
                 for person in self.all_persons:
                     tries -= 1
@@ -95,8 +95,8 @@ class Dojo(object):
                                 try:
                                     living_space_allocation.add_occupant(
                                         person)
-                                except Exception as e:
-                                    print (e)
+                                except Exception:
+                                    continue
                                 else:
                                     self.those_allocated_living_spaces.append(person)
                         if person not in self.those_allocated_offices:
@@ -107,8 +107,8 @@ class Dojo(object):
                                 try:
                                     office_allocation.add_occupant(
                                         person)
-                                except Exception as e:
-                                    print (e)
+                                except Exception:
+                                    continue
                                 else:
                                     self.those_allocated_offices.append(person)
                     elif person.person_type == "fellow" and person.wants_accommodation != "y":
@@ -120,8 +120,8 @@ class Dojo(object):
                                 try:
                                     office_allocation.add_occupant(
                                         person)
-                                except Exception as e:
-                                    print (e)
+                                except Exception:
+                                    continue
                                 else:
                                     self.those_allocated_offices.append(person)
                     elif person.person_type == "staff":
@@ -133,8 +133,8 @@ class Dojo(object):
                                 try:
                                     office_allocation.add_occupant(
                                         person)
-                                except Exception as e:
-                                    print (e)
+                                except Exception:
+                                    continue
                                 else:
                                     self.those_allocated_offices.append(person)
 
@@ -225,33 +225,36 @@ class Dojo(object):
         room_name = room_name.lower()
         if room_type != "office" and room_type != "living_space":
             print ("Invalid room type: Your room type should be 'office' or 'living_space'")
-
         if room_type == "office":
+            for office in self.offices:
+                if office.room_name == room_name:
+                    new_allocation = office
             for person in self.those_allocated_offices:
                 if person.iden == iden:
-                    for office in self.offices:
-                        try:
-                            if office.room_name == room_name:
-                                office.add_occupant(person)
-                        except Exception as e:
-                            print (e)
-                        else:
-                            if office.room_name != room_name:
-                                for occupant in office.persons:
-                                    if occupant == person:
-                                        office.persons.remove(occupant)
+                    our_guy = person
+            try:
+                new_allocation.add_occupant(our_guy)
+            except Exception as e:
+                print (e)
+            else:
+                for room in self.offices:
+                    for occupant in room.persons:
+                        if occupant == our_guy and room.room_name != room_name:
+                            room.persons.remove(our_guy)
 
         elif room_type == "living_space":
+            for living_space in self.living_spaces:
+                if living_space.room_name == room_name:
+                    new_allocation = living_space
             for person in self.those_allocated_living_spaces:
                 if person.iden == iden:
-                    for living_space in self.living_spaces:
-                        try:
-                            if living_space.room_name == room_name:
-                                living_space.add_occupant(person)
-                        except Exception as e:
-                            print (e)
-                        else:
-                            for occupant in living_space.persons:
-                                if occupant == person and living_space.room_name != room_name:
-                                    living_space.persons.remove(occupant)
-                            print ("This shouldn't print")
+                    our_guy = person
+            try:
+                new_allocation.add_occupant(our_guy)
+            except Exception as e:
+                print (e)
+            else:
+                for room in self.living_spaces:
+                    for occupant in room.persons:
+                        if occupant == our_guy and room.room_name != room_name:
+                            room.persons.remove(our_guy)
