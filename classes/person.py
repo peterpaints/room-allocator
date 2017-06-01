@@ -5,7 +5,3 @@ class Person(object):
         self.person_type = person_type
         self.wants_accommodation = wants_accommodation
         self.iden = iden
-
-    def full_name(self):
-        self.full_name = self.person_name + " " + self.person_surname
-        return self.full_name
