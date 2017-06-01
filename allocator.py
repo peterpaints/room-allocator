@@ -1,18 +1,25 @@
-"""
+doc = """
 Office Space Allocator.
 
 Usage:
   allocator create_room <room_type> <room_name>...
   allocator add_person <person_name> <person_surname> <person_type> [<wants_accommodation>]
+  allocator print_room <room_name>
+  allocator print_allocations [--o=<filename>]
+  allocator print_unallocated [--o=<filename>]
+  allocator help
   allocator exit
 
 Options:
-  -h --help                         Show this screen.
-  --version                         Show version.
+    --o=filename                      Optional filename to write output to.
 
 Examples:
   allocator create_room office Blue
   allocator add_person Nelly Armweek Fellow Y
+  allocator print_room Blue
+  allocator print_allocations
+  allocator print_allocations --o=myfile
+  allocator print_unallocated --o=myfile
 
 """
 
@@ -54,19 +61,28 @@ def deco(f):
 
 
 class MyInteractive(cmd.Cmd):
-    intro = ('* ' * 10) + 'WELCOME TO THE OFFICE SPACE ALLOCATOR!' + (' *' * 10)\
-        + '\n' + ('= ' * 7) + 'the easiest way to handle all your room allocation.' + (' =' * 7) \
-        + '\n' + (' ' * 23) + 'Type help for a list of commands'
-    prompt = '(allocator) '
+    intro = '\n' + ' ' \
+        + '\n' + ' ' \
+        + (' ' * 10 + '* ' * 11) + 'WELCOME TO THE OFFICE SPACE ALLOCATOR!' + (' *' * 10)\
+        + '\n' + ' ' \
+        + '\n' + ' ' \
+        + '\n' + ' ' \
+        + '\n' + (' ' * 11 + '= ' * 7) + 'the easiest way to handle all your room allocation.' + (' =' * 7) \
+        + '\n' + ' ' \
+        + '\n' + ' ' \
+        + '\n' + ' ' \
+        + '\n' + (' ' * 12 + ' ' * 23) + 'Type help for a list of commands' \
+        + '\n' + ' ' \
+        + '\n' + '- ' * 53
+    prompt = '(allocator>>) '
 
     @deco
     def do_create_room(self, arg):
         """Usage: create_room <room_type> <room_name>..."""
-        arguments = arg
         try:
-            if arguments['<room_name>'] and arguments['<room_type>']:
-                for room_name in arguments['<room_name>']:
-                    dojo.create_room(arguments['<room_type>'], room_name)
+            if arg['<room_name>'] and arg['<room_type>']:
+                for room_name in arg['<room_name>']:
+                    dojo.create_room(arg['<room_type>'], room_name)
                     dojo.allocate_rooms()
         except Exception as e:
             print (e)
@@ -74,21 +90,57 @@ class MyInteractive(cmd.Cmd):
     @deco
     def do_add_person(self, arg):
         """Usage: add_person <person_name> <person_surname> <person_type> [<wants_accommodation>]"""
-        arguments = arg
         try:
-            if arguments['<person_name>']:
-                if arguments['<person_type>']:
-                    dojo.add_person(arguments['<person_type>'], arguments['<person_name>'], arguments['<person_surname>'], arguments['<wants_accommodation>'])
+            if arg['<person_name>']:
+                if arg['<person_type>']:
+                    dojo.add_person(arg['<person_type>'], arg['<person_name>'], arg['<person_surname>'], arg['<wants_accommodation>'])
                     new_fellow = dojo.all_persons[-1]
                     dojo.allocate_rooms()
         except Exception as e:
             print (e)
 
     @deco
+    def do_print_room(self, arg):
+        """Usage: print_room <room_name>"""
+        try:
+            if arg['<room_name>']:
+                dojo.print_room(arg['<room_name>'])
+        except Exception as e:
+            print (e)
+
+    @deco
+    def do_print_allocations(self, arg):
+        """Usage: print_allocations [--o=<filename>]"""
+        try:
+            if arg['--o']:
+                dojo.print_allocations(arg['--o'])
+            else:
+                dojo.print_allocations()
+        except Exception as e:
+            print (e)
+
+    @deco
+    def do_print_unallocated(self, arg):
+        """Usage: print_unallocated [--o=<filename>]"""
+        try:
+            if arg['--o']:
+                dojo.print_unallocated(arg['--o'])
+            else:
+                dojo.print_unallocated()
+        except Exception as e:
+            print (e)
+
+    @deco
+    def do_help(self, arg):
+        """Usage: help"""
+        print (doc)
+
+    @deco
     def do_exit(self, arg):
         """Usage: exit"""
         print ('Have a nice day!')
         exit()
+
 
 if __name__ == '__main__':
     try:

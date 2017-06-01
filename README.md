@@ -19,18 +19,26 @@ Command | Arguments | Examples
 ------- | --------- | --------
 create_room | <room_type> <room_name>... | create_room office Kinshasa
 add_person | <person_name> <person_surname> <person_type> [<wants_accommodation>] | add_person Peter Musonye fellow Y
-
+print_room | <room_name> | print_room Kinshasa
+print_allocations | [--o=<filename>] | print_allocations / print_allocations --o=myfile
+print_unallocated | [--o=<filename>] | print unallocated / print_unallocated --o=myfile
+help | |
+exit | |
 
 ##### Installation:
 
-> Clone this repo to your local machine using git clone https://github.com/peterpaints/room-allocator/
+> Clone this repo to your local machine: Open terminal in any folder and type `git clone https://github.com/peterpaints/room-allocator.git`
 
 > Switch to the develop branch using `git checkout develop`
 
-> Create a virtualenv on your machine and install the dependencies via `pip install -r requirements.txt` and activate it.
+> Create a [virtualenv](docs.python-guide.org/en/latest/dev/virtualenvs/) on your machine and install the dependencies via `pip install -r requirements.txt` and activate it.
 
-> From the main folder, in terminal, run `python allocator.py`
+> From the main folder of the repo, in terminal, run `python allocator.py`
+
+##### Demo:
+Here is a demo of the app in action:
+
 
 ##### License:
 
-###### The MIT License.
+###### [The MIT License](https://github.com/peterpaints/room-allocator/blob/master/license.md).
