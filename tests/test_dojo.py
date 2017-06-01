@@ -101,7 +101,7 @@ class DojoClassTest(unittest.TestCase):
         black_office_occupants = self.my_class_instance.print_room(black_office.room_name)
         self.assertEqual(black_office_occupants, ["Peter Musonye Fellow ID: 1"])
         self.my_class_instance.create_room("office", "Blue")
-        self.my_class_instance.reallocate(1, "office", "Blue")
+        self.my_class_instance.reallocate_person(1, "office", "Blue")
         blue_office = self.my_class_instance.all_rooms[-1]
         black_office_occupants = self.my_class_instance.print_room(black_office.room_name)
         blue_office_occupants = self.my_class_instance.print_room(blue_office.room_name)
