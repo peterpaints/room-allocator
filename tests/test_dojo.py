@@ -39,15 +39,13 @@ class DojoClassTest(unittest.TestCase):
         """Test that person_type is either 'fellow' or 'staff'."""
         self.my_class_instance.add_person("Fella", "Peter", "Musonye")
         message = sys.stdout.getvalue().strip()
-        self.assertIn(message, "Invalid person_type: Your person type should be either 'fellow' or 'staff'")
-
+        self.assertIn("Invalid person_type: Your person type should be either 'fellow' or 'staff'", message)
 
     def test_wants_accommodation_is_Y_or_N(self):
         """Test that wants_accommodation is only 'Y' or 'N'."""
         self.my_class_instance.add_person("Fellow", "Peter", "Musonye", "Yes")
         message = sys.stdout.getvalue().strip()
-        self.assertIn(message, "Please input Y or N for wants_accommodation")
-
+        self.assertIn("Please input Y or N for wants_accommodation", message)
 
     def test_allocation(self):
         """
@@ -68,8 +66,7 @@ class DojoClassTest(unittest.TestCase):
         """Test that error message is output if room does not exist."""
         self.my_class_instance.print_room("black")
         message = sys.stdout.getvalue().strip()
-        self.assertIn(message, "Black does not exist")
-
+        self.assertIn("Black does not exist", message)
 
     def test_it_outputs_message_if_room_has_no_allocations(self):
         """Test that message is printed if a room has no occupants."""
@@ -80,22 +77,33 @@ class DojoClassTest(unittest.TestCase):
         message = sys.stdout.getvalue().strip()
         self.assertIn("Office Black has no occupants", message)
 
-
     def test_it_outputs_correct_occupants(self):
-        """Test that actual occupants only are printed"""
+        """Test that actual occupants only are printed."""
         self.my_class_instance.add_person("fellow", "Peter", "Musonye")
         self.my_class_instance.add_person("staff", "Peter", "Muriuki")
         self.my_class_instance.create_room("office", "Black")
         new_office = self.my_class_instance.all_rooms[-1]
         self.my_class_instance.allocate_rooms()
-        new_office_occupants =self.my_class_instance.print_room(new_office.room_name)
+        new_office_occupants = self.my_class_instance.print_room(new_office.room_name)
         allocations = self.my_class_instance.print_allocations()
-        self.assertEqual(new_office_occupants, ["Peter Musonye Fellow", "Peter Muriuki Staff"])
-        self.assertEqual(allocations, ["Peter Musonye Fellow", "Peter Muriuki Staff"])
+        self.my_class_instance.print_unallocated()
+        message = sys.stdout.getvalue().strip()
+        self.assertEqual(new_office_occupants, ["Peter Musonye Fellow ID: 1", "Peter Muriuki Staff ID: 2"])
+        self.assertEqual(allocations, ["Peter Musonye Fellow ID: 1", "Peter Muriuki Staff ID: 2"])
+        self.assertIn("Everyone has been allocated a room", message)
 
-
-    def test_it_outputs_to_a_txt_file_if_optioned(self):
-        pass
-
-    def test_txt_file_for_correct_output(self):
-        pass
+    def test_it_reallocates_as_specified(self):
+        """Test that once reallocated, the person is only in one list of occupants, that of the new room."""
+        self.my_class_instance.add_person("fellow", "Peter", "Musonye")
+        self.my_class_instance.create_room("office", "Black")
+        black_office = self.my_class_instance.all_rooms[-1]
+        self.my_class_instance.allocate_rooms()
+        black_office_occupants = self.my_class_instance.print_room(black_office.room_name)
+        self.assertEqual(black_office_occupants, ["Peter Musonye Fellow ID: 1"])
+        self.my_class_instance.create_room("office", "Blue")
+        self.my_class_instance.reallocate(1, "office", "Blue")
+        blue_office = self.my_class_instance.all_rooms[-1]
+        black_office_occupants = self.my_class_instance.print_room(black_office.room_name)
+        blue_office_occupants = self.my_class_instance.print_room(blue_office.room_name)
+        self.assertEqual(black_office_occupants, [])
+        self.assertEqual(blue_office_occupants, ["Peter Musonye Fellow ID: 1"])
