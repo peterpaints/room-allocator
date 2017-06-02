@@ -109,13 +109,35 @@ class DojoClassTest(unittest.TestCase):
         self.assertEqual(blue_office_occupants, ["Peter Musonye Fellow ID: 1"])
 
     def test_cannot_reallocate_to_non_existent_room(self):
-        pass
+        """Test that reallocation only happens with rooms in the system."""
+        self.my_class_instance.reallocate_person(5, "office", "Capitol")
+        message = sys.stdout.getvalue().strip()
+        self.assertIn("Office Capitol does not exist", message)
 
     def test_raises_error_if_reallocating_to_full_room(self):
-        pass
+        """Test that an error is raised when reallocating to a full room."""
+        self.my_class_instance.add_person("fellow", "Peter", "Musonye", "y")
+        self.my_class_instance.add_person("fellow", "John", "Doe", "y")
+        self.my_class_instance.add_person("fellow", "Bar", "Obama", "y")
+        self.my_class_instance.add_person("fellow", "Hilary", "Clinton", "y")
+        self.my_class_instance.create_room("living_space", "Capitol")
+        self.my_class_instance.allocate_rooms()
+        self.my_class_instance.add_person("fellow", "The", "Donald", "y")
+        self.my_class_instance.create_room("living_space", "TrumpTower")
+        self.my_class_instance.allocate_rooms()
+        self.my_class_instance.reallocate_person(5, "living_space", "Capitol")
+        message = sys.stdout.getvalue().strip()
+        self.assertIn("Living_Space Capitol is at full capacity", message)
 
     def test_cannot_reallocate_non_existent_person(self):
-        pass
+        """Test that reallocation only happens with people in the system."""
+        self.my_class_instance.create_room("office", "Capitol")
+        self.my_class_instance.reallocate_person(5, "office", "Capitol")
+        message = sys.stdout.getvalue().strip()
+        self.assertIn("There is no person with ID 5", message)
 
     def test_raises_error_for_wrong_room_type_or_name(self):
-        pass
+        """Test that room_type is only 'office' or 'living_space'."""
+        self.my_class_instance.reallocate_person(5, "living", "Capitol")
+        message = sys.stdout.getvalue().strip()
+        self.assertIn("Invalid room type: Your room type should be 'office' or 'living_space'", message)
