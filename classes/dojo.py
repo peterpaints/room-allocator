@@ -223,38 +223,62 @@ class Dojo(object):
         iden = int(iden)
         room_type = room_type.lower()
         room_name = room_name.lower()
+        new_allocation = object
+        person_found = False
+
         if room_type != "office" and room_type != "living_space":
             print ("Invalid room type: Your room type should be 'office' or 'living_space'")
+
         if room_type == "office":
+            office_found = False
             for office in self.offices:
                 if office.room_name == room_name:
+                    office_found = True
                     new_allocation = office
+
             for person in self.those_allocated_offices:
                 if person.iden == iden:
+                    person_found = True
                     our_guy = person
-            try:
-                new_allocation.add_occupant(our_guy)
-            except Exception as e:
-                print (e)
+
+            if not office_found:
+                print ("Office " + room_name.title() + " does not exist")
+            elif not person_found:
+                print ("There is no person with ID " + str(iden))
             else:
-                for room in self.offices:
-                    for occupant in room.persons:
-                        if occupant == our_guy and room.room_name != room_name:
-                            room.persons.remove(our_guy)
+                try:
+                    new_allocation.add_occupant(our_guy)
+                except Exception as e:
+                    print (e)
+                else:
+                    for room in self.offices:
+                        for occupant in room.persons:
+                            if occupant == our_guy and room.room_name != room_name:
+                                room.persons.remove(our_guy)
 
         elif room_type == "living_space":
+            living_space_found = False
             for living_space in self.living_spaces:
                 if living_space.room_name == room_name:
+                    living_space_found = True
                     new_allocation = living_space
+
             for person in self.those_allocated_living_spaces:
                 if person.iden == iden:
+                    person_found = True
                     our_guy = person
-            try:
-                new_allocation.add_occupant(our_guy)
-            except Exception as e:
-                print (e)
+
+            if not living_space_found:
+                print ("Living Space " + room_name.title() + " does not exist")
+            elif not person_found:
+                print ("There is no person with ID " + str(iden))
             else:
-                for room in self.living_spaces:
-                    for occupant in room.persons:
-                        if occupant == our_guy and room.room_name != room_name:
-                            room.persons.remove(our_guy)
+                try:
+                    new_allocation.add_occupant(our_guy)
+                except Exception as e:
+                    print (e)
+                else:
+                    for room in self.living_spaces:
+                        for occupant in room.persons:
+                            if occupant == our_guy and room.room_name != room_name:
+                                room.persons.remove(our_guy)
