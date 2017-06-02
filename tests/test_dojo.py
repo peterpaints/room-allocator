@@ -1,3 +1,4 @@
+import os
 import sys
 import unittest
 from io import StringIO
@@ -92,6 +93,33 @@ class DojoClassTest(unittest.TestCase):
         self.assertEqual(allocations, ["Peter Musonye Fellow ID: 1", "Peter Muriuki Staff ID: 2"])
         self.assertIn("Everyone has been allocated a room", message)
 
+    def test_print_allocations_to_file(self):
+        """Test for correct allocations in file if optioned."""
+        self.my_class_instance.add_person("fellow", "Peter", "Musonye")
+        self.my_class_instance.add_person("staff", "Peter", "Muriuki")
+        self.my_class_instance.create_room("office", "Black")
+        self.my_class_instance.allocate_rooms()
+        self.my_class_instance.print_allocations("test1")
+        f = open("test1.txt").readlines()
+        self.assertEqual(f[1], "Office Black:\n")
+        self.assertEqual(f[3], "Peter Musonye Fellow ID: 1\n")
+        self.assertEqual(f[4], "Peter Muriuki Staff ID: 2\n")
+        os.remove("test1.txt")
+
+    def test_print_unallocated_to_file(self):
+        """Test for correct output in unallocated persons file if optioned."""
+        self.my_class_instance.add_person("fellow", "Peter", "Musonye", "y")
+        self.my_class_instance.add_person("fellow", "John", "Doe", "y")
+        self.my_class_instance.add_person("fellow", "Barack", "Obama", "y")
+        self.my_class_instance.add_person("fellow", "Hilary", "Clinton", "y")
+        self.my_class_instance.add_person("fellow", "The", "Donald", "y")
+        self.my_class_instance.create_room("living_space", "Buckingham")
+        self.my_class_instance.allocate_rooms()
+        self.my_class_instance.print_unallocated("test2")
+        f = open("test2.txt").readlines()
+        self.assertEqual(f[0], "The Donald Fellow ID: 5\n")
+        os.remove("test2.txt")
+
     def test_it_reallocates_as_specified(self):
         """Test that once reallocated, the person is only in one list of occupants, that of the new room."""
         self.my_class_instance.add_person("fellow", "Peter", "Musonye")
@@ -141,3 +169,21 @@ class DojoClassTest(unittest.TestCase):
         self.my_class_instance.reallocate_person(5, "living", "Capitol")
         message = sys.stdout.getvalue().strip()
         self.assertIn("Invalid room type: Your room type should be 'office' or 'living_space'", message)
+
+    def test_load_people(self):
+        """Test that people can be added from a txt file correctly."""
+        f = open("test3.txt", "a")
+        f.write("OLUWAFEMI SULE FELLOW Y" + "\n")
+        f.write("DOMINIC WALTERS STAFF" + "\n")
+        f.write("SIMON PATTERSON FELLOW Y" + "\n")
+        f.write("MARI LAWRENCE FELLOW Y" + "\n")
+        f.write("LEIGH RILEY STAFF" + "\n")
+        f.write("TANA LOPEZ FELLOW Y" + "\n")
+        f.write("KELLY McGUIRE STAFF" + "\n")
+        self.my_class_instance.load_people("test3.txt")
+        person_count = len(self.my_class_instance.all_persons)
+        people = self.my_class_instance.all_persons
+        self.assertEqual(person_count, 7)
+        self.assertListEqual([people[0].person_name, people[0].person_surname], ["oluwafemi", "sule"])
+        self.assertListEqual([people[6].person_name, people[6].person_surname], ["kelly", "mcguire"])
+        os.remove("test3.txt")
