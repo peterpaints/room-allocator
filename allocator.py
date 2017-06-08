@@ -8,6 +8,7 @@ Usage:
   allocator print_allocations [--o=<filename>]
   allocator print_unallocated [--o=<filename>]
   allocator reallocate_person <person_identifier> <new_room_type> <new_room_name>
+  allocator load_people <filename>
   allocator help
   allocator exit
 
@@ -122,6 +123,12 @@ class MyInteractive(cmd.Cmd):
         """Usage: reallocate_person <person_identifier> <new_room_type> <new_room_name>"""
         if arg['<person_identifier>'] and arg['<new_room_type>'] and arg['<new_room_name>']:
             dojo.reallocate_person(arg['<person_identifier>'], arg['<new_room_type>'], arg['<new_room_name>'])
+
+    @deco
+    def do_load_people(self, arg):
+        """Usage: load_people <filename>"""
+        if arg['<filename>']:
+            dojo.load_people(arg['<filename>'])
 
     @deco
     def do_help(self, arg):
