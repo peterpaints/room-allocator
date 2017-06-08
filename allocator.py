@@ -23,6 +23,7 @@ Examples:
   allocator print_allocations --o=myfile
   allocator print_unallocated --o=myfile
   allocator reallocate_person 1 office Red
+  allocator load_people cohort_18
 
 """
 
