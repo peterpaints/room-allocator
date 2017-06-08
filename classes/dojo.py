@@ -284,4 +284,14 @@ class Dojo(object):
                                 room.persons.remove(our_guy)
 
     def load_people(self, filename):
-        pass
+        filename = filename.lower()
+        try:
+            f = open(filename + ".txt").readlines()
+            for person in f:
+                person = person.split()
+                try:
+                    self.add_person(person[2], person[0], person[1], person[3])
+                except Exception:
+                    self.add_person(person[2], person[0], person[1])
+        except FileNotFoundError:
+            print (filename + ".txt not found")
