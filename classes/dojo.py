@@ -282,3 +282,6 @@ class Dojo(object):
                         for occupant in room.persons:
                             if occupant == our_guy and room.room_name != room_name:
                                 room.persons.remove(our_guy)
+
+    def load_people(self, filename):
+        pass
