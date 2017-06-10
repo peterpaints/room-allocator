@@ -162,7 +162,7 @@ class DojoClassTest(unittest.TestCase):
         self.my_class_instance.create_room("office", "Capitol")
         self.my_class_instance.reallocate_person(5, "office", "Capitol")
         message = sys.stdout.getvalue().strip()
-        self.assertIn("There is no person with ID 5", message)
+        self.assertIn("ID 5 has not been allocated an office yet", message)
 
     def test_raises_error_for_wrong_room_type_or_name(self):
         """Test that room_type is only 'office' or 'living_space'."""
