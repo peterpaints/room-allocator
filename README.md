@@ -38,7 +38,7 @@ exit | |
 
 ##### Demo:
 Here is a demo of the app in action:
-[![asciicast](https://asciinema.org/a/dj19wnrnf13aadxvgzlscsnk2.png)](https://asciinema.org/a/dj19wnrnf13aadxvgzlscsnk2)
+[![asciicast](https://asciinema.org/a/4hnwqjvql9molrjxrn5s604gm.png)](https://asciinema.org/a/4hnwqjvql9molrjxrn5s604gm)
 
 ##### License:
 
