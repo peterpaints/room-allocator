@@ -244,7 +244,7 @@ class Dojo(object):
             if not office_found:
                 print ("Office " + room_name.title() + " does not exist")
             elif not person_found:
-                print ("There is no person with ID " + str(iden))
+                print ("ID " + str(iden) + " has not been allocated an office yet")
             else:
                 try:
                     new_allocation.add_occupant(our_guy)
@@ -271,7 +271,7 @@ class Dojo(object):
             if not living_space_found:
                 print ("Living Space " + room_name.title() + " does not exist")
             elif not person_found:
-                print ("There is no person with ID " + str(iden))
+                print ("ID " + str(iden) + " has not been allocated a living_space yet")
             else:
                 try:
                     new_allocation.add_occupant(our_guy)
@@ -291,7 +291,9 @@ class Dojo(object):
                 person = person.split()
                 try:
                     self.add_person(person[2], person[0], person[1], person[3])
+                    self.allocate_rooms()
                 except Exception:
                     self.add_person(person[2], person[0], person[1])
+                    self.allocate_rooms()
         except FileNotFoundError:
             print (filename + ".txt not found")
