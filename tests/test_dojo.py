@@ -188,3 +188,7 @@ class DojoClassTest(unittest.TestCase):
         self.assertListEqual([people[6].person_name, people[6].person_surname], ["kelly", "mcguire"])
         self.assertEqual(person_count, 7)
         os.remove("test3.txt")
+
+    def test_save_state(self):
+        """Test that current app data is stored correctly in db specified."""
+        pass
