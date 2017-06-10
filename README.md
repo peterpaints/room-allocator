@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/peterpaints/room-allocator.svg?branch=task_2)](https://travis-ci.org/peterpaints/room-allocator)
-[![Coverage Status](https://coveralls.io/repos/github/peterpaints/room-allocator/badge.svg?branch=task_2)](https://coveralls.io/github/peterpaints/room-allocator?branch=task_2)
+[![Build Status](https://travis-ci.org/peterpaints/room-allocator.svg?branch=task_3)](https://travis-ci.org/peterpaints/room-allocator)
+[![Coverage Status](https://coveralls.io/repos/github/peterpaints/room-allocator/badge.svg?branch=task_3)](https://coveralls.io/github/peterpaints/room-allocator?branch=task_3)
 # Andela BootCamp 18 Week 2 Project
 ### Office Space Allocator
 
