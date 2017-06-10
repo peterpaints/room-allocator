@@ -82,7 +82,7 @@ class Dojo(object):
         if not self.all_persons:
             print ("There are no persons to allocate rooms")
         else:
-            tries = 2 + len(self.all_rooms) * 9
+            tries = 2 + len(self.all_rooms) * 10
             while tries > 0:
                 for person in self.all_persons:
                     tries -= 1
