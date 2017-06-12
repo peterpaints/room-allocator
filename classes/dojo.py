@@ -82,7 +82,7 @@ class Dojo(object):
         if not self.all_persons:
             print ("There are no persons to allocate rooms")
         else:
-            tries = 2 + len(self.all_rooms) * 20
+            tries = 3 + len(self.all_rooms) * 20
             while tries > 0:
                 for person in self.all_persons:
                     tries -= 1
@@ -95,10 +95,9 @@ class Dojo(object):
                                 try:
                                     living_space_allocation.add_occupant(
                                         person)
-                                except Exception:
-                                    continue
-                                else:
                                     self.those_allocated_living_spaces.append(person)
+                                except Exception:
+                                    pass
                         if person not in self.those_allocated_offices:
                             if self.offices:
                                 random_office_number = randint(
@@ -107,10 +106,9 @@ class Dojo(object):
                                 try:
                                     office_allocation.add_occupant(
                                         person)
+                                    self.those_allocated_offices.append(person)
                                 except Exception:
                                     continue
-                                else:
-                                    self.those_allocated_offices.append(person)
                     elif person.person_type == "fellow" and person.wants_accommodation != "y":
                         if person not in self.those_allocated_offices:
                             if self.offices:
@@ -120,10 +118,9 @@ class Dojo(object):
                                 try:
                                     office_allocation.add_occupant(
                                         person)
+                                    self.those_allocated_offices.append(person)
                                 except Exception:
                                     continue
-                                else:
-                                    self.those_allocated_offices.append(person)
                     elif person.person_type == "staff":
                         if person not in self.those_allocated_offices:
                             if self.offices:
@@ -133,10 +130,9 @@ class Dojo(object):
                                 try:
                                     office_allocation.add_occupant(
                                         person)
+                                    self.those_allocated_offices.append(person)
                                 except Exception:
                                     continue
-                                else:
-                                    self.those_allocated_offices.append(person)
 
     def print_room(self, room_name):
         room_name = room_name.lower()
