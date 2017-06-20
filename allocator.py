@@ -9,6 +9,8 @@ Usage:
   allocator print_unallocated [--o=<filename>]
   allocator reallocate_person <person_identifier> <new_room_type> <new_room_name>
   allocator load_people <filename>
+  allocator save_state <db_name>
+  allocator load_state <db_name>
   allocator help
   allocator exit
 
@@ -24,6 +26,8 @@ Examples:
   allocator print_unallocated --o=myfile
   allocator reallocate_person 1 office Red
   allocator load_people cohort_18
+  allocator save_state mydatabase
+  allocator load_state mydatabase
 
 """
 
@@ -130,6 +134,18 @@ class MyInteractive(cmd.Cmd):
         """Usage: load_people <filename>"""
         if arg['<filename>']:
             dojo.load_people(arg['<filename>'])
+
+    @deco
+    def do_save_state(self, arg):
+        """Usage: save_state <db_name>"""
+        if arg['<db_name>']:
+            dojo.save_state(arg['<db_name>'])
+
+    @deco
+    def do_load_state(self, arg):
+        """Usage: load_state <db_name>"""
+        if arg['<db_name>']:
+            dojo.load_state(arg['<db_name>'])
 
     @deco
     def do_help(self, arg):
