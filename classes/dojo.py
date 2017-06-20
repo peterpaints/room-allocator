@@ -1,9 +1,14 @@
+import os
+import sys
+from io import StringIO
 from classes.office import Office
 from classes.living_space import LivingSpace
 from classes.fellow import Fellow
 from classes.staff import Staff
 from random import randint
-
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from classes.db import Base, People, Rooms
 
 class Dojo(object):
     """
@@ -293,3 +298,85 @@ class Dojo(object):
                     self.allocate_rooms()
         except FileNotFoundError:
             print (filename + ".txt not found")
+
+    def save_state(self, db=None):
+        db = db.lower()
+        if os.path.exists('default.sqlite'):
+            os.remove('default.sqlite')
+
+        if db:
+            db = db + '.sqlite'
+        else:
+            db = 'default.sqlite'
+
+        engine = create_engine('sqlite:///' + db)
+        Session = sessionmaker()
+        Session.configure(bind=engine)
+        Base.metadata.create_all(engine)
+
+        Base.metadata.bind = engine
+
+        session = Session()
+
+        for person in self.all_persons:
+            new_person = People(
+                iden=person.iden,
+                person_name=person.person_name,
+                person_surname=person.person_surname,
+                person_type=person.person_type,
+                wants_accommodation=person.wants_accommodation
+                )
+            session.merge(new_person)
+
+        for room in self.all_rooms:
+            new_room = Rooms(
+                room_name=room.room_name,
+                room_type=room.room_type,
+                room_persons=", ".join([str(person.iden) for person in room.persons])
+                )
+            session.merge(new_room)
+
+        session.commit()
+        print ("Db created successfully")
+
+    def load_state(self, db):
+        db = db.lower()
+
+        engine = create_engine('sqlite:///' + db + '.sqlite')
+
+        Session = sessionmaker()
+        Session.configure(bind=engine)
+        session = Session()
+        all_people = session.query(People).all()
+        all_rooms = session.query(Rooms).all()
+        found = False
+        for person in all_people:
+            for other_person in self.all_persons:
+                if other_person.person_name == person.person_name and other_person.person_surname == person.person_surname:
+                    found = True
+            if not found:
+                for other_person in self.all_persons:
+                    if other_person.iden == person.iden:
+                        old_id = other_person.iden
+                        other_person.iden = len(all_people) + self.all_persons.index(other_person) + 1
+                        print (other_person.person_type.title() + " " + other_person.person_name.title() +
+                               " " + other_person.person_surname.title() + "'s" + " " + "ID has been changed from " + str(old_id) + " to " + str(other_person.iden))
+                self.all_persons.append(person)
+
+        for room in all_rooms:
+            old_stdout = sys.stdout
+            sys.stdout = StringIO()
+            self.create_room(room.room_type, room.room_name)
+            sys.stdout = old_stdout
+
+            for person in room.room_persons.split(", "):
+                for each_person in self.all_persons:
+                    if int(person) == each_person.iden:
+                        for real_room in self.all_rooms:
+                            if real_room.room_name == room.room_name and real_room.room_type == room.room_type:
+                                if each_person not in real_room.persons:
+                                    real_room.persons.append(each_person)
+                                    if real_room.room_type == "office":
+                                        self.those_allocated_offices.append(each_person)
+                                    elif real_room.room_type == "living_space":
+                                        self.those_allocated_living_spaces.append(each_person)
