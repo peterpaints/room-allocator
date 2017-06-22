@@ -89,21 +89,27 @@ class DojoClassTest(unittest.TestCase):
         allocations = self.my_class_instance.print_allocations()
         self.my_class_instance.print_unallocated()
         message = sys.stdout.getvalue().strip()
-        self.assertEqual(new_office_occupants, ["Peter Musonye Fellow ID: 1", "Peter Muriuki Staff ID: 2"])
-        self.assertEqual(allocations, ["Peter Musonye Fellow ID: 1", "Peter Muriuki Staff ID: 2"])
+        first_person_id = str(self.my_class_instance.all_persons[0].iden)
+        second_person_id = str(self.my_class_instance.all_persons[1].iden)
+        self.assertEqual(new_office_occupants, ["Peter Musonye Fellow ID: " + first_person_id, "Peter Muriuki Staff ID: " + second_person_id])
+        self.assertEqual(allocations, ["Peter Musonye Fellow ID: " + first_person_id, "Peter Muriuki Staff ID: " + second_person_id])
         self.assertIn("Everyone has been allocated a room", message)
 
     def test_print_allocations_to_file(self):
         """Test for correct allocations in file if optioned."""
         self.my_class_instance.add_person("fellow", "Peter", "Musonye")
         self.my_class_instance.add_person("staff", "Peter", "Muriuki")
+        first_person_id = str(self.my_class_instance.all_persons[0].iden)
+        second_person_id = str(self.my_class_instance.all_persons[1].iden)
         self.my_class_instance.create_room("office", "Black")
         self.my_class_instance.allocate_rooms()
         self.my_class_instance.print_allocations("test1")
-        f = open("test1.txt").readlines()
+        g = open("test1.txt")
+        f = g.readlines()
+        g.close()
         self.assertEqual(f[1], "Office Black:\n")
-        self.assertEqual(f[3], "Peter Musonye Fellow ID: 1\n")
-        self.assertEqual(f[4], "Peter Muriuki Staff ID: 2\n")
+        self.assertIn("Peter Musonye Fellow", f[3])
+        self.assertIn("Peter Muriuki Staff", f[4])
         os.remove("test1.txt")
 
     def test_print_unallocated_to_file(self):
@@ -113,32 +119,36 @@ class DojoClassTest(unittest.TestCase):
         self.my_class_instance.add_person("fellow", "Barack", "Obama", "y")
         self.my_class_instance.add_person("fellow", "Hilary", "Clinton", "y")
         self.my_class_instance.add_person("fellow", "The", "Donald", "y")
+        fifth_person_id = str(self.my_class_instance.all_persons[-1].iden)
         self.my_class_instance.create_room("living_space", "Buckingham")
         self.my_class_instance.allocate_rooms()
         self.my_class_instance.print_unallocated("test2")
-        f = open("test2.txt").readlines()
-        self.assertEqual(f[0], "The Donald Fellow ID: 5\n")
+        g = open("test2.txt")
+        f = g.readlines()
+        g.close()
+        self.assertIn("The Donald Fellow ID", f[0])
         os.remove("test2.txt")
 
     def test_it_reallocates_as_specified(self):
         """Test that once reallocated, the person is only in one list of occupants, that of the new room."""
         self.my_class_instance.add_person("fellow", "Peter", "Musonye")
+        first_person_id = str(self.my_class_instance.all_persons[0].iden)
         self.my_class_instance.create_room("office", "Black")
         black_office = self.my_class_instance.all_rooms[-1]
         self.my_class_instance.allocate_rooms()
         black_office_occupants = self.my_class_instance.print_room(black_office.room_name)
-        self.assertEqual(black_office_occupants, ["Peter Musonye Fellow ID: 1"])
+        self.assertEqual(black_office_occupants, ["Peter Musonye Fellow ID: " + first_person_id])
         self.my_class_instance.create_room("office", "Blue")
-        self.my_class_instance.reallocate_person(1, "office", "Blue")
+        self.my_class_instance.reallocate_person(first_person_id, "office", "Blue")
         blue_office = self.my_class_instance.all_rooms[-1]
         black_office_occupants = self.my_class_instance.print_room(black_office.room_name)
         blue_office_occupants = self.my_class_instance.print_room(blue_office.room_name)
         self.assertEqual(black_office_occupants, [])
-        self.assertEqual(blue_office_occupants, ["Peter Musonye Fellow ID: 1"])
+        self.assertEqual(blue_office_occupants, ["Peter Musonye Fellow ID: " + first_person_id])
 
     def test_cannot_reallocate_to_non_existent_room(self):
         """Test that reallocation only happens with rooms in the system."""
-        self.my_class_instance.reallocate_person(5, "office", "Capitol")
+        self.my_class_instance.reallocate_person("5", "office", "Capitol")
         message = sys.stdout.getvalue().strip()
         self.assertIn("Office Capitol does not exist", message)
 
@@ -151,22 +161,23 @@ class DojoClassTest(unittest.TestCase):
         self.my_class_instance.create_room("living_space", "Capitol")
         self.my_class_instance.allocate_rooms()
         self.my_class_instance.add_person("fellow", "The", "Donald", "y")
+        fifth_person_id = str(self.my_class_instance.all_persons[-1].iden)
         self.my_class_instance.create_room("living_space", "TrumpTower")
         self.my_class_instance.allocate_rooms()
-        self.my_class_instance.reallocate_person(5, "living_space", "Capitol")
+        self.my_class_instance.reallocate_person(fifth_person_id, "living_space", "Capitol")
         message = sys.stdout.getvalue().strip()
         self.assertIn("Living_Space Capitol is at full capacity", message)
 
     def test_cannot_reallocate_non_existent_person(self):
         """Test that reallocation only happens with people in the system."""
         self.my_class_instance.create_room("office", "Capitol")
-        self.my_class_instance.reallocate_person(5, "office", "Capitol")
+        self.my_class_instance.reallocate_person("5", "office", "Capitol")
         message = sys.stdout.getvalue().strip()
         self.assertIn("ID 5 has not been allocated an office yet", message)
 
     def test_raises_error_for_wrong_room_type_or_name(self):
         """Test that room_type is only 'office' or 'living_space'."""
-        self.my_class_instance.reallocate_person(5, "living", "Capitol")
+        self.my_class_instance.reallocate_person("5", "living", "Capitol")
         message = sys.stdout.getvalue().strip()
         self.assertIn("Invalid room type: Your room type should be 'office' or 'living_space'", message)
 
