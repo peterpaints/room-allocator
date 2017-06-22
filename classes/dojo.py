@@ -189,10 +189,10 @@ class Dojo(object):
     def print_allocations(self, filename=None):
         """For each room, print out room title, followed by a list of occupants."""
         if not self.all_rooms:
-            print("There are no allocations yet")
+            cprint("\nThere are no allocations yet", 'red', attrs=['dark'])
         else:
             if filename:
-                print("Output written to " + filename + ".txt")
+                cprint("\nOutput written to " + filename + ".txt", 'green', attrs=['dark'])
             for room in self.all_rooms:
                 room_occupants = []
                 if not room.persons:
@@ -417,4 +417,4 @@ class Dojo(object):
                                             self.those_allocated_offices.append(each_person)
                                         elif real_room.room_type == "living_space":
                                             self.those_allocated_living_spaces.append(each_person)
-            cprint("\n" + "Data loaded from " + db + " successfully", 'green', attrs=['dark'])
+            cprint("\n" + "Data loaded from " + db + ".sqlite successfully", 'green', attrs=['dark'])
