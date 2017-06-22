@@ -180,7 +180,7 @@ class Dojo(object):
                         room_occupants.append(occupant.person_name.title(
                         ) + " " + occupant.person_surname.title() + " " + occupant.person_type.title() + " ID: " + str(occupant.iden))
                 for occupant in room_occupants:
-                    cprint (occupant, 'green', attrs=['dark'])
+                    cprint(occupant, 'green', attrs=['dark'])
         if not found:
             cprint("\n" + room_name.title() + " does not exist", 'red', attrs=['dark'])
         else:
