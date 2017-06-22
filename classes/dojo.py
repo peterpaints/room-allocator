@@ -1,4 +1,5 @@
 import os
+import random
 import sys
 
 from classes.db import Base, People, Rooms
@@ -7,7 +8,6 @@ from classes.living_space import LivingSpace
 from classes.fellow import Fellow
 from classes.staff import Staff
 from io import StringIO
-from random import randint
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from termcolor import cprint
@@ -81,11 +81,12 @@ class Dojo(object):
         elif person_name.isnumeric() or person_surname.isnumeric():
             cprint("\n" + "Invalid name: Names should be alphanumeric", 'red', attrs=['dark'])
         else:
+            id_range = range(0, 10000)
             if person_type == 'staff':
-                self.iden += 1
+                self.iden += random.choice(id_range)
                 person = Staff(self.iden, person_name, person_surname)
             elif person_type == 'fellow':
-                self.iden += 1
+                self.iden += random.choice(id_range)
                 person = Fellow(
                     self.iden, person_name, person_surname, wants_accommodation)
             try:
@@ -120,9 +121,7 @@ class Dojo(object):
                     if person.person_type == "fellow" and person.wants_accommodation == "y":
                         if person not in self.those_allocated_living_spaces:
                             if self.living_spaces:
-                                random_living_space_number = randint(
-                                    0, len(self.living_spaces) - 1)
-                                living_space_allocation = self.living_spaces[random_living_space_number]
+                                living_space_allocation = random.choice(self.living_spaces)
                                 try:
                                     living_space_allocation.add_occupant(
                                         person)
@@ -131,9 +130,7 @@ class Dojo(object):
                                     pass
                         if person not in self.those_allocated_offices:
                             if self.offices:
-                                random_office_number = randint(
-                                    0, len(self.offices) - 1)
-                                office_allocation = self.offices[random_office_number]
+                                office_allocation = random.choice(self.offices)
                                 try:
                                     office_allocation.add_occupant(
                                         person)
@@ -143,9 +140,7 @@ class Dojo(object):
                     elif person.person_type == "fellow" and person.wants_accommodation != "y":
                         if person not in self.those_allocated_offices:
                             if self.offices:
-                                random_office_number = randint(
-                                    0, len(self.offices) - 1)
-                                office_allocation = self.offices[random_office_number]
+                                office_allocation = random.choice(self.offices)
                                 try:
                                     office_allocation.add_occupant(
                                         person)
@@ -155,9 +150,7 @@ class Dojo(object):
                     elif person.person_type == "staff":
                         if person not in self.those_allocated_offices:
                             if self.offices:
-                                random_office_number = randint(
-                                    0, len(self.offices) - 1)
-                                office_allocation = self.offices[random_office_number]
+                                office_allocation = random.choice(self.offices)
                                 try:
                                     office_allocation.add_occupant(
                                         person)
@@ -347,8 +340,6 @@ class Dojo(object):
 
     def save_state(self, db=None):
         """Save data in self.all_rooms and self.all_persons to an sqlite3 db."""
-        if os.path.exists('default.sqlite'):
-            os.remove('default.sqlite')
         if db:
             db = db.lower()
             db = db + '.sqlite'
@@ -364,7 +355,7 @@ class Dojo(object):
 
         session = Session()
 
-        if not self.all_persons or not self.all_rooms:
+        if not self.all_persons and not self.all_rooms:
             cprint("\n" + "There was no data to save to " + db, 'green', attrs=['dark'])
         else:
             for person in self.all_persons:
@@ -376,7 +367,6 @@ class Dojo(object):
                     wants_accommodation=person.wants_accommodation
                     )
                 session.merge(new_person)
-
 
             for room in self.all_rooms:
                 new_room = Rooms(
@@ -390,43 +380,41 @@ class Dojo(object):
             cprint("\n" + "Data saved to " + db + " successfully", 'green', attrs=['dark'])
 
     def load_state(self, db):
+        """Query data from specified db and reconstruct people and allocations."""
         db = db.lower()
+        if not os.path.exists(db + '.sqlite'):
+            cprint("\n" + db + '.sqlite not found', 'red', attrs=['dark'])
+        else:
+            engine = create_engine('sqlite:///' + db + '.sqlite')
+            Session = sessionmaker()
+            Session.configure(bind=engine)
+            session = Session()
+            all_people = session.query(People).all()
+            all_rooms = session.query(Rooms).all()
 
-        engine = create_engine('sqlite:///' + db + '.sqlite')
-
-        Session = sessionmaker()
-        Session.configure(bind=engine)
-        session = Session()
-        all_people = session.query(People).all()
-        all_rooms = session.query(Rooms).all()
-        found = False
-        for person in all_people:
-            for other_person in self.all_persons:
-                if other_person.person_name == person.person_name and other_person.person_surname == person.person_surname:
-                    found = True
-            if not found:
+            found = False
+            for person in all_people:
                 for other_person in self.all_persons:
-                    if other_person.iden == person.iden:
-                        old_id = other_person.iden
-                        other_person.iden = len(all_people) + self.all_persons.index(other_person) + 1
-                        print (other_person.person_type.title() + " " + other_person.person_name.title() +
-                               " " + other_person.person_surname.title() + "'s" + " " + "ID has been changed from " + str(old_id) + " to " + str(other_person.iden))
-                self.all_persons.append(person)
+                    if other_person.person_name == person.person_name and other_person.person_surname == person.person_surname:
+                        found = True
+                if not found:
+                    self.all_persons.append(person)
 
-        for room in all_rooms:
-            old_stdout = sys.stdout
-            sys.stdout = StringIO()
-            self.create_room(room.room_type, room.room_name)
-            sys.stdout = old_stdout
+            for room in all_rooms:
+                old_stdout = sys.stdout
+                sys.stdout = StringIO()
+                self.create_room(room.room_type, room.room_name)
+                sys.stdout = old_stdout
 
-            for person in room.room_persons.split(", "):
-                for each_person in self.all_persons:
-                    if int(person) == each_person.iden:
-                        for real_room in self.all_rooms:
-                            if real_room.room_name == room.room_name and real_room.room_type == room.room_type:
-                                if each_person not in real_room.persons:
-                                    real_room.persons.append(each_person)
-                                    if real_room.room_type == "office":
-                                        self.those_allocated_offices.append(each_person)
-                                    elif real_room.room_type == "living_space":
-                                        self.those_allocated_living_spaces.append(each_person)
+                for person in room.room_persons.split(", "):
+                    for each_person in self.all_persons:
+                        if person and int(person) == each_person.iden:
+                            for real_room in self.all_rooms:
+                                if real_room.room_name == room.room_name and real_room.room_type == room.room_type:
+                                    if each_person not in real_room.persons:
+                                        real_room.persons.append(each_person)
+                                        if real_room.room_type == "office":
+                                            self.those_allocated_offices.append(each_person)
+                                        elif real_room.room_type == "living_space":
+                                            self.those_allocated_living_spaces.append(each_person)
+            cprint("\n" + "Data loaded from " + db + " successfully", 'green', attrs=['dark'])
