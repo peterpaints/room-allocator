@@ -1,8 +1,12 @@
 import os
 import sys
 import unittest
+
 from io import StringIO
+from classes.db import Base, People, Rooms
 from classes.dojo import Dojo
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 
 class DojoClassTest(unittest.TestCase):
@@ -16,6 +20,12 @@ class DojoClassTest(unittest.TestCase):
         self.my_class_instance.create_room("office", "Blue")
         new_room_count = len(self.my_class_instance.all_rooms)
         self.assertEqual(new_room_count - initial_room_count, 1)
+
+    def test_cannot_create_room_with_nonalphanumeric_names(self):
+        """Test that a room cannot be named e.g. 123."""
+        self.my_class_instance.create_room("office", "123")
+        message = sys.stdout.getvalue().strip()
+        self.assertIn("Invalid room name: Your room name should be alphanumeric", message)
 
     def test_create_room_without_duplicates(self):
         """Test that a room cannot be created twice."""
@@ -35,6 +45,12 @@ class DojoClassTest(unittest.TestCase):
         self.my_class_instance.add_person("Fellow", "Peter", "Musonye")
         result = self.my_class_instance.all_persons
         self.assertEqual(result[-1].wants_accommodation, 'n', msg="The default value of wants_accommodation is N if Y is not input")
+
+    def test_cannot_add_person_with_nonalphanumeric_names(self):
+        """Test that a person cannot be named e.g. 123."""
+        self.my_class_instance.add_person("staff", "123", "Musonye")
+        message = sys.stdout.getvalue().strip()
+        self.assertIn("Invalid name: Names should be alphanumeric", message)
 
     def test_person_type_either_fellow_or_staff(self):
         """Test that person_type is either 'fellow' or 'staff'."""
@@ -202,4 +218,46 @@ class DojoClassTest(unittest.TestCase):
 
     def test_save_state(self):
         """Test that current app data is stored correctly in db specified."""
-        pass
+        self.my_class_instance.add_person("fellow", "Peter", "Musonye")
+        self.my_class_instance.add_person("fellow", "John", "Doe")
+        self.my_class_instance.add_person("fellow", "Bar", "Obama", "y")
+        self.my_class_instance.add_person("fellow", "Hilary", "Clinton", "y")
+        self.my_class_instance.add_person("fellow", "The", "Donald", "y")
+        self.my_class_instance.add_person("fellow", "The", "Queen", "y")
+        self.my_class_instance.create_room("living_space", "Capitol")
+        self.my_class_instance.create_room("office", "West_Wing")
+        self.my_class_instance.allocate_rooms()
+        self.my_class_instance.save_state("test")
+        self.assertTrue(os.path.exists("test.sqlite"))
+        engine = create_engine('sqlite:///test.sqlite')
+        Session = sessionmaker()
+        Session.configure(bind=engine)
+        session = Session()
+        all_people = session.query(People).all()
+        all_rooms = session.query(Rooms).all()
+        session.commit()
+        self.assertEqual([all_people[0].person_name, all_people[0].person_surname], ["peter", "musonye"])
+        self.assertEqual([all_rooms[-1].room_name, all_rooms[-1].room_type], ["west_wing", "office"])
+        os.remove("test.sqlite")
+
+    def test_load_state(self):
+        """Test that data saved in db can be used in application correctly."""
+        self.my_class_instance.add_person("fellow", "Peter", "Musonye")
+        self.my_class_instance.add_person("fellow", "John", "Doe")
+        self.my_class_instance.add_person("fellow", "Bar", "Obama", "y")
+        self.my_class_instance.add_person("fellow", "Hilary", "Clinton", "y")
+        self.my_class_instance.add_person("fellow", "The", "Donald", "y")
+        self.my_class_instance.add_person("fellow", "The", "Queen", "y")
+        self.my_class_instance.create_room("living_space", "Capitol")
+        self.my_class_instance.create_room("office", "West_Wing")
+        self.my_class_instance.allocate_rooms()
+        self.my_class_instance.save_state("test")
+        self.assertTrue(os.path.exists("test.sqlite"))
+        self.my_class_instance.load_state("test")
+        allocations = self.my_class_instance.print_allocations()
+        first_person_id = str(self.my_class_instance.all_persons[0].iden)
+        sixth_person_id = str(self.my_class_instance.all_persons[5].iden)
+        self.assertEqual(allocations[0], "Peter Musonye Fellow ID: " + first_person_id)
+        self.assertEqual(allocations[5], "The Queen Fellow ID: " + sixth_person_id)
+        self.assertEqual(len(self.my_class_instance.all_persons), 6)
+        os.remove("test.sqlite")
