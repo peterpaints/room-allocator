@@ -9,7 +9,7 @@ Usage:
   allocator print_unallocated [--o=<filename>]
   allocator reallocate_person <person_identifier> <new_room_type> <new_room_name>
   allocator load_people <filename>
-  allocator save_state <db_name>
+  allocator save_state [--db=<db_name>]
   allocator load_state <db_name>
   allocator help
   allocator exit
@@ -26,7 +26,7 @@ Examples:
   allocator print_unallocated --o=myfile
   allocator reallocate_person 1 office Red
   allocator load_people cohort_18
-  allocator save_state mydatabase
+  allocator save_state --db=mydatabase
   allocator load_state mydatabase
 
 """
@@ -82,7 +82,7 @@ class MyInteractive(cmd.Cmd):
         + '\n' + (' ' * 12 + ' ' * 23) + 'Type help for a list of commands' \
         + '\n' + ' ' \
         + '\n' + '- ' * 53
-    prompt = '(allocator>>) '
+    prompt = '\n(allocator >>) '
 
     @deco
     def do_create_room(self, arg):
@@ -137,9 +137,11 @@ class MyInteractive(cmd.Cmd):
 
     @deco
     def do_save_state(self, arg):
-        """Usage: save_state <db_name>"""
-        if arg['<db_name>']:
-            dojo.save_state(arg['<db_name>'])
+        """Usage: save_state [--db=<db_name>]"""
+        if arg['--db']:
+            dojo.save_state(arg['--db'])
+        else:
+            dojo.save_state()
 
     @deco
     def do_load_state(self, arg):
