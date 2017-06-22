@@ -3,7 +3,7 @@ import sys
 import unittest
 
 from io import StringIO
-from classes.db import Base, People, Rooms
+from classes.db import People, Rooms
 from classes.dojo import Dojo
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -115,8 +115,6 @@ class DojoClassTest(unittest.TestCase):
         """Test for correct allocations in file if optioned."""
         self.my_class_instance.add_person("fellow", "Peter", "Musonye")
         self.my_class_instance.add_person("staff", "Peter", "Muriuki")
-        first_person_id = str(self.my_class_instance.all_persons[0].iden)
-        second_person_id = str(self.my_class_instance.all_persons[1].iden)
         self.my_class_instance.create_room("office", "Black")
         self.my_class_instance.allocate_rooms()
         self.my_class_instance.print_allocations("test1")
@@ -135,7 +133,6 @@ class DojoClassTest(unittest.TestCase):
         self.my_class_instance.add_person("fellow", "Barack", "Obama", "y")
         self.my_class_instance.add_person("fellow", "Hilary", "Clinton", "y")
         self.my_class_instance.add_person("fellow", "The", "Donald", "y")
-        fifth_person_id = str(self.my_class_instance.all_persons[-1].iden)
         self.my_class_instance.create_room("living_space", "Buckingham")
         self.my_class_instance.allocate_rooms()
         self.my_class_instance.print_unallocated("test2")
