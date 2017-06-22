@@ -23,6 +23,10 @@ add_person | <person_name> <person_surname> <person_type> [<wants_accommodation>
 print_room | <room_name> | print_room Kinshasa
 print_allocations | [--o=<filename>] | print_allocations / print_allocations --o=myfile
 print_unallocated | [--o=<filename>] | print unallocated / print_unallocated --o=myfile
+reallocate_person | <person_identifier> <new_room_type> <new_room_name> | reallocate_person 2323 office bash
+load_people | <filename> | load_people myfile
+save_state | [--db=<db_name>] | save_state / save_state --db=mydb
+load_state | <db_name> | load_state mydb
 help | |
 exit | |
 
@@ -32,7 +36,7 @@ exit | |
 
 > Switch to the develop branch using `git checkout develop`
 
-> Create a [virtualenv](docs.python-guide.org/en/latest/dev/virtualenvs/) on your machine and install the dependencies via `pip install -r requirements.txt` and activate it.
+> Create a [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/) on your machine and install the dependencies via `pip install -r requirements.txt` and activate it.
 
 > From the main folder of the repo, in terminal, run `python allocator.py`
 
