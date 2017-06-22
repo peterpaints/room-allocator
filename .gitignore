@@ -10,6 +10,7 @@ sample.py
 test3.txt
 test.sqlite
 default.sqlite
+mydb.sqlite
 .coverage
 
 # Folders #
