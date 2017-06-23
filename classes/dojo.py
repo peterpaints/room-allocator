@@ -340,6 +340,8 @@ class Dojo(object):
 
     def save_state(self, db=None):
         """Save data in self.all_rooms and self.all_persons to an sqlite3 db."""
+        if os.path.exists('default.sqlite'):
+            os.remove('default.sqlite')
         if db:
             db = db.lower()
             db = db + '.sqlite'
