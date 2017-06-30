@@ -2,15 +2,17 @@ import os
 import random
 import sys
 
+from io import StringIO
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from termcolor import cprint
+
 from classes.db import Base, People, Rooms
 from classes.office import Office
 from classes.living_space import LivingSpace
 from classes.fellow import Fellow
 from classes.staff import Staff
-from io import StringIO
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from termcolor import cprint
 
 
 class Dojo(object):
@@ -40,7 +42,7 @@ class Dojo(object):
         room_name = room_name.lower()
         if room_type != "office" and room_type != "living_space":
             cprint("\n" + "Invalid room type: Your room type should be 'office' or 'living_space'", 'red', attrs=['dark'])
-        elif room_name.isnumeric():
+        elif not room_name.isalnum():
             cprint("\n" + "Invalid room name: Your room name should be alphanumeric", 'red', attrs=['dark'])
         else:
             if room_type == 'office':
@@ -74,12 +76,14 @@ class Dojo(object):
         person_type = person_type.lower()
         person_name = person_name.lower()
         person_surname = person_surname.lower()
-        if wants_accommodation != "y" and wants_accommodation != "n":
+        if person_type == 'staff' and wants_accommodation and wants_accommodation != 'n':
+            cprint("\n" + "People with person_type 'staff' are not allowed the accommodation option", 'red', attrs=['dark'])
+        elif wants_accommodation != "y" and wants_accommodation != "n":
             cprint("\n" + "Please input Y or N for wants_accommodation", 'red', attrs=['dark'])
         elif person_type != 'staff' and person_type != 'fellow':
             cprint("\n" + "Invalid person_type: Your person type should be either 'fellow' or 'staff'", 'red', attrs=['dark'])
-        elif person_name.isnumeric() or person_surname.isnumeric():
-            cprint("\n" + "Invalid name: Names should be alphanumeric", 'red', attrs=['dark'])
+        elif not person_name.isalpha() or not person_surname.isalpha():
+            cprint("\n" + "Invalid name: Names should be alphabetical", 'red', attrs=['dark'])
         else:
             id_range = range(0, 10000)
             if person_type == 'staff':
@@ -93,7 +97,7 @@ class Dojo(object):
                 for item in self.all_persons:
                     if item.person_name == person_name and item.person_surname == person_surname:
                         raise Exception(
-                            person_type.title() + " " + person_name.title() + " already exists")
+                            person_name.title() + " " + person_surname.title() + " already exists")
             except Exception as e:
                 cprint("\n" + str(e), 'red', attrs=['dark'])
             else:
@@ -225,26 +229,51 @@ class Dojo(object):
         Self.those_allocated_offices and self.those_allocated_living_spaces, so
         print them out.
         """
+        office_waiting_list = []
+        living_space_waiting_list = []
         found = False
-        print (" ")
         for person in self.all_persons:
-            if person not in self.those_allocated_offices and person not in self.those_allocated_living_spaces:
+            if person not in self.those_allocated_offices:
                 found = True
-                if filename:
-                    filename = filename.lower()
-                    f = open(filename + ".txt", "a")
-                    f.write(person.person_name.title(
-                    ) + " " + person.person_surname.title() + " " + person.person_type.title() + " ID: " + str(person.iden) + "\n")
-                else:
-                    cprint(person.person_name.title() + " " + person.person_surname.title() + " " + person.person_type.title() + " ID: " + str(person.iden), 'green', attrs=['dark'])
+                office_waiting_list.append(person.person_name.title() + " " + person.person_surname.title() + " " + person.person_type.title() + " ID: " + str(person.iden))
+            if person not in self.those_allocated_living_spaces and person.wants_accommodation == "y":
+                found = True
+                living_space_waiting_list.append(person.person_name.title() + " " + person.person_surname.title() + " " + person.person_type.title() + " ID: " + str(person.iden))
+
+        if office_waiting_list:
+            if filename:
+                filename = filename.lower()
+                f = open(filename + ".txt", "a")
+                f.write("\nOffice Space Waiting List:\n")
+                f.write("\n")
+                for applicant in office_waiting_list:
+                    f.write(applicant + "\n")
+            else:
+                cprint("\nOffice Space Waiting List:\n", 'cyan', attrs=['dark'])
+                for applicant in office_waiting_list:
+                    cprint(applicant, 'green', attrs=['dark'])
+
+        if living_space_waiting_list:
+            if filename:
+                filename = filename.lower()
+                f = open(filename + ".txt", "a")
+                f.write("\nLiving Space Waiting List:\n")
+                f.write("\n")
+                for applicant in living_space_waiting_list:
+                    f.write(applicant + "\n")
+            else:
+                cprint("\nLiving Space Waiting List:\n", 'cyan', attrs=['dark'])
+                for applicant in living_space_waiting_list:
+                    cprint(applicant, 'green', attrs=['dark'])
+
         if not found:
             if not self.all_persons:
-                cprint("There's no one in the system", 'red', attrs=['dark'])
+                cprint("\nThere's no one in the system", 'red', attrs=['dark'])
             else:
-                cprint("Everyone has been allocated a room", 'cyan', attrs=['dark'])
+                cprint("\nEveryone has been allocated a room", 'cyan', attrs=['dark'])
         else:
             if filename:
-                cprint("Output written to " + filename + ".txt", 'green', attrs=['dark'])
+                cprint("\nOutput written to " + filename + ".txt", 'green', attrs=['dark'])
 
     def reallocate_person(self, iden, room_type, room_name):
         """
