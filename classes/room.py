@@ -1,7 +1,8 @@
+from abc import ABCMeta, abstractmethod
 from termcolor import cprint
 
 
-class Room(object):
+class Room(metaclass=ABCMeta):
     def __init__(self, room_name, room_type, max_persons):
         self.room_name = room_name
         self.room_type = room_type
@@ -23,3 +24,7 @@ class Room(object):
                 raise Exception(self.room_type.title() + " " + self.room_name.title() + " is at full capacity")
         else:
             raise Exception(person.person_type.title() + " " + person.person_name.title() + " " + person.person_surname.title() + " is already among the occupants in " + self.room_type + " " + self.room_name.title())
+
+    @abstractmethod
+    def __repr__(self):
+        pass
