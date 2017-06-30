@@ -16,6 +16,7 @@ Usage:
 
 Options:
     --o=filename                      Optional filename to write output to.
+    --db=db_name                      Optional database to save data to.
 
 Examples:
   allocator create_room office Blue
@@ -23,12 +24,12 @@ Examples:
   allocator print_room Blue
   allocator print_allocations
   allocator print_allocations --o=myfile
+  allocator print_unallocated
   allocator print_unallocated --o=myfile
   allocator reallocate_person 1 office Red
   allocator load_people cohort_18
   allocator save_state --db=mydatabase
   allocator load_state mydatabase
-
 """
 
 import cmd
